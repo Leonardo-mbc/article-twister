@@ -15,8 +15,9 @@
           <% if session[:user].blank? %>
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">ログイン／新規登録<b class="caret"></b></a>
             <ul class="dropdown-menu">
-              <li><%= link_to "Facebookでログイン／新規登録", user_omniauth_authorize_path(:facebook) %></li>
-              <li><a href="#user_create-modal" data-toggle="modal">匿名でログイン／新規登録</a></li>
+                <li><%= link_to "Twitterでログイン／新規登録", user_omniauth_authorize_path(:twitter) %></li>
+                <li><%= link_to "Facebookでログイン／新規登録", user_omniauth_authorize_path(:facebook) %></li>
+                <li><a href="#user_create-modal" data-toggle="modal">匿名でログイン／新規登録</a></li>
             </ul>
           <% else %>
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">UserID: <%= session[:user]['id'] %><b class="caret"></b></a>
