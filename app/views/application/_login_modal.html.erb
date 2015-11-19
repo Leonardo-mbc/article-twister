@@ -1,0 +1,39 @@
+<!-- user create modal -->
+<div id="user_create-modal" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">ユーザ作成</h4>
+      </div>
+      <div class="modal-body">
+        <label for="inputEmail" class="col-lg-2 control-label">名前（途中でやめた時、再開するのに必要です）</label>
+        <div class="col-lg-10">
+          <input type="text" class="form-control" id="user_name_input" placeholder="名前を入力してください" />
+          <span class="user_create">完了！</span>
+          <span class="same_name_exist">既に使われています。別の名前をお願いします。</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+        <button type="button" class="btn btn-warning" onClick="user_create();">作成</button>
+      </div>
+
+      <div class="modal-header">
+        <h4 class="modal-title">再開する</h4>
+      </div>
+      <div class="modal-body">
+        <label for="inputEmail" class="col-lg-2 control-label">名前</label>
+        <div class="col-lg-10">
+          <input type="text" class="form-control" id="user_resume_input" placeholder="名前を入力してください" />
+          <span class="user_resume">完了！</span>
+          <span class="same_name_not_exist">該当するユーザーが存在しません。</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+        <button type="button" class="btn btn-warning" onClick="user_resume();">再開</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
