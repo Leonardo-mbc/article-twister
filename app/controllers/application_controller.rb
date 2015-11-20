@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
   def login_check
     c = params[:controller]
     a = params[:action]
-    if (c != "log" && a != "in") && (c != "users")
+    if (c != "log" && a != "in") && (c != "users/omniauth_callbacks")
       if session[:user].blank?
         redirect_to :controller => "log", :action => "in"
       end

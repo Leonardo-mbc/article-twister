@@ -1,5 +1,10 @@
 <div class="jumbotron">
-  <h1>Login</h1>
-  <p>上部のメニューバーからログイン、または新規登録してください。</p>
-  <p><a class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+    <h1>Login</h1>
+    <p>上部のメニューバーからログイン、または新規登録してください。</p>
+    <%= link_to user_omniauth_authorize_path(:facebook), :class => 'btn btn-default' do %>
+        <i class="fa fa-facebook-square"></i> Facebookでログイン／新規登録
+    <% end %>
+    <%= link_to user_omniauth_authorize_path(:twitter), :class => 'btn btn-default' do %>
+        <i class="fa fa-twitter-square"></i> Twitterでログイン／新規登録
+    <% end %>
 </div>
