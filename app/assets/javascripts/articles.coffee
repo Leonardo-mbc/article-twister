@@ -19,6 +19,7 @@ class @Picker
             data: options
 
             success: (data) =>
+                @erase()
                 @put data
 
     put: (items) ->
@@ -34,7 +35,7 @@ class @Picker
                     @select e, item.id
 
                 tr_tag.append $("<td>").append @check_icon
-                tr_tag.append $("<td>").append item.id
+                tr_tag.append $("<td>").append @link_to 'topic', item.id
                 tr_tag.append $("<td>").append item.title
                 tr_tag.append $("<td>").append item.quant
 
@@ -66,6 +67,19 @@ class @Picker
         else
             @select_cells.push id
             $(e.currentTarget).find("i").css "opacity", 1
+
+    link_to: (which, id) =>
+        if which is 'topic'
+            a_tag = $("<a>")
+            $(a_tag).html id
+            $(a_tag).css { 'cursor': 'pointer' }
+            $(a_tag).on 'click', =>
+                @fetch { topic_id: id }
+
+        a_tag
+
+    erase: ->
+        $(".cells").html ""
 
     make_icon_check: () =>
         check = $("<i>")
