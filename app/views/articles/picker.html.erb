@@ -1,0 +1,8 @@
+<table class="cells"></table>
+
+<%= javascript_tag do %>
+    $(function() {
+        var picker = new Picker("<%= Settings.api.host %>");
+        picker.fetch({});
+    });
+<% end %>
