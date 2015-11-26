@@ -2,6 +2,7 @@ class @Picker
     constructor: (api_url) ->
         @endpoint = api_url
         @select_cells = []
+        @check_icon = @make_icon_check()
 
     fetch: (params) ->
         options = {
@@ -25,9 +26,14 @@ class @Picker
 
         if items.topics
             $.each items.topics, (key, item) =>
-                tr_tag = $("<tr>")
+                id =  { topic_id: item.id }
 
-                tr_tag.append $("<td>").append @check_cell { topic_id: item.id }
+                tr_tag = $("<tr>")
+                $(tr_tag).attr 'data-id', item.id
+                $(tr_tag).on "click", (e) =>
+                    @select e, item.id
+
+                tr_tag.append $("<td>").append @check_icon
                 tr_tag.append $("<td>").append item.id
                 tr_tag.append $("<td>").append item.title
                 tr_tag.append $("<td>").append item.quant
@@ -36,9 +42,14 @@ class @Picker
 
         if items.news
             $.each items.news, (key, item) =>
-                tr_tag = $("<tr>")
+                id = { news_id: item.id }
 
-                tr_tag.append $("<td>").append @check_cell { news_id: item.id }
+                tr_tag = $("<tr>")
+                $(tr_tag).attr 'data-id', item.id
+                $(tr_tag).on "click", (e) =>
+                    @select e, item.id
+
+                tr_tag.append $("<td>").append @check_icon
                 tr_tag.append $("<td>").append item.id
                 tr_tag.append $("<td>").append item.title
                 tr_tag.append $("<td>").append item.body
@@ -48,11 +59,19 @@ class @Picker
 
         $(".cells").append tr_tags
 
-    check_cell: (id) =>
-        input = $("<input>")
-
-        $(input).attr "type", "checkbox"
-        $(input).on "click", =>
+    select: (e, id) =>
+        if id in @select_cells
+            @select_cells.splice @select_cells.indexOf(id), 1
+            $(e.currentTarget).find("i").css "opacity", 0
+        else
             @select_cells.push id
+            $(e.currentTarget).find("i").css "opacity", 1
 
-        input
+    make_icon_check: () =>
+        check = $("<i>")
+        $(check).attr "class", "fa fa-check-circle"
+        $(check).css "opacity", 0
+
+        icon = $(check).get(0).outerHTML
+
+        icon
