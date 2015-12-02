@@ -1,8 +1,31 @@
-<table class="cells table table-striped table-hover"></table>
+<ul class="nav nav-tabs">
+  <li class="active" data-tab='topic'><a data-toggle="tab">Topic List</a></li>
+  <li data-tab='article'><a data-toggle="tab">Article List</a></li>
+  <li data-tab='items'><a data-toggle="tab">Selected item</a></li>
+</ul>
+
+<table class="topic-cells table table-striped table-hover"></table>
+<table class="article-cells table table-striped table-hover"></table>
+<table class="items-cells table table-striped table-hover"></table>
+
+<ul class="pagination pagination-sm">
+    <li data-role="page_prev" class="disabled"><a href="JavaScript:void(0)">&laquo;</a></li>
+    <li data-role="page_num" class="active"><a href="JavaScript:void(0)">1</a></li>
+    <li data-role="page_num"><a href="JavaScript:void(0)">2</a></li>
+    <li data-role="page_num"><a href="JavaScript:void(0)">3</a></li>
+    <li data-role="page_num"><a href="JavaScript:void(0)">4</a></li>
+    <li data-role="page_num"><a href="JavaScript:void(0)">5</a></li>
+    <li data-role="page_next"><a href="JavaScript:void(0)">&raquo;</a></li>
+</ul>
+
+<div class="import">
+  <a class="btn btn-primary" data-import="all">まとめてインポート</a>
+  <a class="btn btn-success" data-import="news">ニュースのみインポート</a>
+</div>
 
 <%= javascript_tag do %>
     $(function() {
         var picker = new Picker("<%= Settings.api.host %>");
-        picker.fetch({});
+        picker.fetch({}, 'topic');
     });
 <% end %>

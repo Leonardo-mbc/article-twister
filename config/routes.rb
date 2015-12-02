@@ -7,6 +7,8 @@ Rails.application.routes.draw do
   resources :articles do
     collection do
       get :picker
+      get :import
+      get :combine
     end
   end
 

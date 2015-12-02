@@ -11,10 +11,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151120003751) do
+ActiveRecord::Schema.define(version: 20151202092845) do
 
   create_table "news", force: :cascade do |t|
     t.integer  "news_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string   "title"
+    t.string   "topic_id"
+    t.string   "source"
+    t.string   "url"
+    t.string   "host"
+  end
+
+  create_table "profile_sources", force: :cascade do |t|
+    t.integer  "profile_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer  "source"
+  end
+
+  create_table "profiles", force: :cascade do |t|
+    t.string   "name"
+    t.string   "profile"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

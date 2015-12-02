@@ -1,0 +1,5 @@
+<% unless @total_wc.nil? %>
+    <% @total_wc.each do |word, count| %>
+        console.log("<%= word %>: <%= count %>");
+    <% end %>
+<% end %>
