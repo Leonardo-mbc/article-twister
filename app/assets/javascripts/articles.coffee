@@ -27,14 +27,14 @@ class @Picker
             data: options
 
             success: (data) =>
-                @put data, target
+                @put data, target, true
 
     clear_requests: =>
         @requests.forEach (req) =>
             req.abort()
             @requests.splice req, 1
 
-    put: (items, target) =>
+    put: (items, target, move) =>
         tr_tags = []
         table = $(".#{target}-cells")
 
@@ -90,15 +90,16 @@ class @Picker
 
                 $(".details").append p_tag, small_tag
         else
-            $("[data-tab]").removeClass 'active'
-            $("[data-tab='#{target}']").addClass 'active'
+            if move
+                $("[data-tab]").removeClass 'active'
+                $("[data-tab='#{target}']").addClass 'active'
 
-            $("table").hide()
+                $("table").hide()
+                $(table).show()
 
             $(table).html tr_tags
-            $(table).show()
 
-    select: (e, id) =>
+    select: (e, id, move = false) =>
         if e.currentTarget
             tr = e.currentTarget
         else
@@ -111,7 +112,7 @@ class @Picker
             @select_cells.push id
             $(tr).find("i").css "opacity", 1
 
-        @put @select_cells, 'items'
+        @put @select_cells, 'items', move
 
     link_to: (which, id) =>
         a_tag = $("<a>")
@@ -272,6 +273,18 @@ class @Plotter
             .attr 'class', 'axis_y'
             .attr "transform", "translate(" + @padding + ", 0)"
             .call yAxis
+
+    change_axis: (axis, name) ->
+        $("[data-title='#{axis}']").html name
+        $("[data-label='#{axis}']").html name
+
+    clear_axis: (axis) =>
+        @dataset.forEach (data, news_id) =>
+            @dataset[news_id].x = 0.5 if axis is 'X'
+            @dataset[news_id].y = 0.5 if axis is 'Y'
+            $("[data-title='#{axis}']").html "#{axis}軸へのマッピング"
+
+        @plot()
 
     mount: (axis, id, value) =>
         switch axis
