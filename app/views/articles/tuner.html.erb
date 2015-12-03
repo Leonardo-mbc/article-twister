@@ -1,0 +1,28 @@
+<% @selectors.each do |selector| %>
+    <div class="btn-group">
+        <a class="btn btn-<%= selector[:label_type] %> btn-xs" href="#"><%= selector[:axis] %>軸へのマッピング</a>
+        <a aria-expanded="false" class="btn btn-<%= selector[:label_type] %> btn-xs dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
+        <ul class="dropdown-menu">
+            <% @profiles.each do |prof| %>
+                <% path = x_similar_article_path(prof.id) if selector[:axis] == 'X' %>
+                <% path = y_similar_article_path(prof.id) if selector[:axis] == 'Y' %>
+                <li><%= link_to prof.name, path, remote: true %></li>
+            <% end %>
+        </ul>
+    </div>
+<% end %>
+
+<div class="stage"></div>
+
+<div class="form-group">
+    <span class="label label-primary">Primary</span>
+    <span class="label label-success">Success</span>
+</div>
+
+<%= javascript_tag do %>
+    var plotter;
+    $(function() {
+        plotter = new Plotter(500, 500);
+        plotter.plot();
+    });
+<% end %>

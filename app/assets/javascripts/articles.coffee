@@ -222,3 +222,67 @@ class @Picker
         icon = $(check).get(0).outerHTML
 
         icon
+
+class @Plotter
+    constructor: (width, height) ->
+        @width = width
+        @height = height
+        @stage = d3.select ".stage"
+            .append 'svg'
+        @dataset = []
+
+        @stage.attr 'width', @width
+            .attr 'height', @height
+
+        @padding = 30
+        @xScale = d3.scale.linear()
+            .domain [0, 1]
+            .range [@padding, @width - @padding]
+        @yScale = d3.scale.linear()
+            .domain [0, 1]
+            .range [@height - @padding, @padding]
+
+        xAxis = d3.svg.axis()
+            .scale @xScale
+            .orient 'bottom'
+        yAxis = d3.svg.axis()
+            .scale @yScale
+            .orient 'left'
+        @stage.append 'g'
+            .attr 'class', 'axis'
+            .attr "transform", "translate(0, " + (@height - @padding) + ")"
+            .call xAxis
+        @stage.append 'g'
+            .attr 'class', 'axis'
+            .attr "transform", "translate(" + @padding + ", 0)"
+            .call yAxis
+
+    mount: (axis, id, value) =>
+        switch axis
+            when 'x'
+                if @dataset[id]
+                    @dataset[id].x = value
+                else
+                    @dataset[id] = { x: value, y: 0.5 }
+            when 'y'
+                if @dataset[id]
+                    @dataset[id].y = value
+                else
+                    @dataset[id] = { x: 0.5, y: value }
+
+    plot: () =>
+        scale = 0.8
+        width = @padding * scale
+        height = @padding * scale
+        @stage.selectAll('image').remove()
+
+        @dataset.forEach (data, news_id) =>
+            @stage.append 'image'
+                .attr 'x', @xScale(data.x) - width * 0.5
+                .attr 'y', @yScale(data.y) - height * 0.5
+                .attr 'class', 'document'
+                .attr 'width', width
+                .attr 'height', height
+                .attr 'xlink:href', '/assets/docment.svg'
+                .on "mouseover", ->
+                    console.log data.x, data.y

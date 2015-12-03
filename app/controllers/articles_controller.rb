@@ -1,9 +1,28 @@
 class ArticlesController < ApplicationController
   def index
-    @news = News.all().order("created_at DESC").page(params[:page])
+    @news = News.all().order("created_at DESC").page params[:page]
   end
 
   def picker
+  end
+
+  def tuner
+    @selectors = [
+      { label_type: 'primary', axis: 'X' },
+      { label_type: 'success', axis: 'Y' }
+    ]
+
+    @profiles = Profile.all
+  end
+
+  def x_similar
+    prof_id = params[:id]
+    @sim_box = similar prof_id
+  end
+
+  def y_similar
+    prof_id = params[:id]
+    @sim_box = similar prof_id
   end
 
   def import
@@ -75,6 +94,21 @@ class ArticlesController < ApplicationController
   end
 
 private
+  def similar(prof_id)
+    public_dir = "#{Rails.root}/public"
+    sim_box = Hash.new
+    Dir::glob("#{public_dir}/articles_wc/*.txt").each do |data|
+      Open3.popen3("#{Rails.root}/app/bin/similar #{public_dir}/profiles/#{prof_id}.txt #{data}") do |stdin, stdout, stderr|
+        stdin.close
+        sim = stdout.read.to_f
+        id = data.scan(/([0-9]+?)\.txt/).flatten.first
+        sim_box[id] = sim
+      end
+    end
+
+    sim_box
+  end
+
   def word_count(text)
     wc = Hash.new 0
     Natto::MeCab.new().parse(text).split("\n").each do |word|

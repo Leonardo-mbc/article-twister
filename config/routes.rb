@@ -9,6 +9,12 @@ Rails.application.routes.draw do
       get :picker
       get :import
       get :combine
+      get :tuner
+    end
+
+    member do
+      get :x_similar
+      get :y_similar
     end
   end
 
