@@ -19,10 +19,13 @@
     <span class="label label-success">Success</span>
 </div>
 
+<blockquote class="details"></blockquote>
+
 <%= javascript_tag do %>
     var plotter;
     $(function() {
-        plotter = new Plotter(500, 500);
+        var picker = new Picker("<%= Settings.api.host %>");
+        plotter = new Plotter(500, 500, picker);
         plotter.plot();
     });
 <% end %>

@@ -4,12 +4,15 @@ class @Picker
         @select_cells = []
         @check_icon = @make_icon_check()
         @topic_page = 1
+        @requests = []
 
         @tab_enable()
         @pager_enable()
         @importer_enable()
 
-    fetch: (params, target) ->
+    fetch: (params, target) =>
+        @clear_requests()
+
         options = {
             topic_id: null,
             news_id: null,
@@ -17,7 +20,7 @@ class @Picker
         if params
             (options[k] = v for k, v of params)
 
-        $.ajax
+        @requests.push $.ajax
             type: 'GET'
             url: "#{@endpoint}/api/v1/"
             dataType: 'json'
@@ -25,6 +28,11 @@ class @Picker
 
             success: (data) =>
                 @put data, target
+
+    clear_requests: =>
+        @requests.forEach (req) =>
+            req.abort()
+            @requests.splice req, 1
 
     put: (items, target) =>
         tr_tags = []
@@ -74,7 +82,13 @@ class @Picker
                 tr_tags.push tr_tag
 
             $(table).html tr_tags
+        if target is 'details'
+            $(".details").html ""
+            $.each items.news, (key, item) =>
+                p_tag = $('<p>').html item.title
+                small_tag = $('<small>').html item.source
 
+                $(".details").append p_tag, small_tag
         else
             $("[data-tab]").removeClass 'active'
             $("[data-tab='#{target}']").addClass 'active'
@@ -224,9 +238,11 @@ class @Picker
         icon
 
 class @Plotter
-    constructor: (width, height) ->
+    constructor: (width, height, picker) ->
         @width = width
         @height = height
+        @picker = picker
+
         @stage = d3.select ".stage"
             .append 'svg'
         @dataset = []
@@ -249,11 +265,11 @@ class @Plotter
             .scale @yScale
             .orient 'left'
         @stage.append 'g'
-            .attr 'class', 'axis'
+            .attr 'class', 'axis_x'
             .attr "transform", "translate(0, " + (@height - @padding) + ")"
             .call xAxis
         @stage.append 'g'
-            .attr 'class', 'axis'
+            .attr 'class', 'axis_y'
             .attr "transform", "translate(" + @padding + ", 0)"
             .call yAxis
 
@@ -271,6 +287,8 @@ class @Plotter
                     @dataset[id] = { x: 0.5, y: value }
 
     plot: () =>
+        self = this
+
         scale = 0.8
         width = @padding * scale
         height = @padding * scale
@@ -283,6 +301,13 @@ class @Plotter
                 .attr 'class', 'document'
                 .attr 'width', width
                 .attr 'height', height
-                .attr 'xlink:href', '/assets/docment.svg'
-                .on "mouseover", ->
-                    console.log data.x, data.y
+                .attr 'xlink:href', '/assets/document_gray.svg'
+                .on 'mouseover', ->
+                    self.picker.fetch({ news_id: news_id }, "details")
+                    d3.select(this)
+                        .attr 'xlink:href', '/assets/document_blue.svg'
+                .on 'mouseout',  ->
+                    d3.select(this)
+                        .attr 'xlink:href', '/assets/document_gray.svg'
+                .on 'click', =>
+                    console.log "open", news_id
