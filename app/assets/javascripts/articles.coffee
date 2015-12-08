@@ -44,13 +44,15 @@ class @Picker
 
                 tr_tag = $("<tr>")
                 $(tr_tag).attr 'data-id', item.id
-                $(tr_tag).on "click", (e) =>
-                    @select e, item.id
 
-                tr_tag.append $("<td>").append @check_icon
+                checker = $("<td class='checker'>").append @check_icon
+                    .on "click", (e) =>
+                        @select e, item.id
+                tr_tag.append checker
                 tr_tag.append $("<td>").append @link_to 'article_list', item.id
                 tr_tag.append $("<td>").append item.title
                 tr_tag.append $("<td>").append item.quant
+                tr_tag.append $("<td>").append item.updated_at
 
                 tr_tags.push tr_tag
 
@@ -151,7 +153,7 @@ class @Picker
             $("table").hide()
             $(".#{target}-cells").show()
 
-            if target is 'topic'
+            if target is 'topic' or target is 'imported_news'
                 $(".pagination").show()
             else
                 $(".pagination").hide()
