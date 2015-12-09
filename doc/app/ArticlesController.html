@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="utf-8">
+
+<title>class ArticlesController - Rails Application Documentation</title>
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "./";
+</script>
+
+<script src="./js/jquery.js"></script>
+<script src="./js/darkfish.js"></script>
+
+<link href="./css/fonts.css" rel="stylesheet">
+<link href="./css/rdoc.css" rel="stylesheet">
+
+
+
+<body id="top" role="document" class="class">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="./index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="./table_of_contents.html#pages">Pages</a>
+    <a href="./table_of_contents.html#classes">Classes</a>
+    <a href="./table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search" spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  
+
+  <div id="class-metadata">
+    
+    <div id="parent-class-section" class="nav-section">
+  <h3>Parent</h3>
+
+  
+  <p class="link"><a href="ApplicationController.html">ApplicationController</a>
+  
+</div>
+
+    <div id="includes-section" class="nav-section">
+  <h3>Included Modules</h3>
+
+  <ul class="link-list">
+  
+  
+    <li><a class="include" href="WordProcessor.html">WordProcessor</a>
+  
+  
+  </ul>
+</div>
+
+    
+    <!-- Method Quickref -->
+<div id="method-list-section" class="nav-section">
+  <h3>Methods</h3>
+
+  <ul class="link-list" role="directory">
+    
+    <li ><a href="#method-i-combine">#combine</a>
+    
+    <li ><a href="#method-i-import">#import</a>
+    
+    <li ><a href="#method-i-imported_list">#imported_list</a>
+    
+    <li ><a href="#method-i-index">#index</a>
+    
+    <li ><a href="#method-i-picker">#picker</a>
+    
+    <li ><a href="#method-i-push_rate">#push_rate</a>
+    
+    <li ><a href="#method-i-tuner">#tuner</a>
+    
+    <li ><a href="#method-i-x_similar">#x_similar</a>
+    
+    <li ><a href="#method-i-y_similar">#y_similar</a>
+    
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main" aria-labelledby="class-ArticlesController">
+  <h1 id="class-ArticlesController" class="class">
+    class ArticlesController
+  </h1>
+
+  <section class="description">
+    
+  </section>
+
+  
+  
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+
+    
+
+    
+     <section id="public-instance-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Instance Methods</h3>
+       </header>
+
+    
+      <div id="method-i-combine" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">combine</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="combine-source">
+            <pre><span class="ruby-comment"># File app/controllers/articles_controller.rb, line 82</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">combine</span>
+  <span class="ruby-keyword">unless</span> <span class="ruby-identifier">params</span>[<span class="ruby-value">:selected</span>].<span class="ruby-identifier">nil?</span>
+    <span class="ruby-identifier">news</span> = <span class="ruby-identifier">params</span>[<span class="ruby-value">:selected</span>].<span class="ruby-identifier">map</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">id</span><span class="ruby-operator">|</span> <span class="ruby-identifier">id</span>.<span class="ruby-identifier">to_i</span> }
+    <span class="ruby-ivar">@total_wc</span> = <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">0</span>)
+
+    <span class="ruby-identifier">news</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">news_id</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">wc_hash</span>(<span class="ruby-identifier">news_id</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">wc</span><span class="ruby-operator">|</span>
+        <span class="ruby-ivar">@total_wc</span>[<span class="ruby-identifier">wc</span>[<span class="ruby-value">:word</span>]] <span class="ruby-operator">+=</span> <span class="ruby-identifier">wc</span>[<span class="ruby-value">:count</span>]
+      <span class="ruby-keyword">end</span>
+    <span class="ruby-keyword">end</span>
+
+    <span class="ruby-comment"># TODO: 関連付けのままsaveしたい</span>
+    <span class="ruby-identifier">prof</span> = <span class="ruby-constant">Profile</span>.<span class="ruby-identifier">create</span>({ <span class="ruby-identifier">name</span><span class="ruby-operator">:</span> <span class="ruby-identifier">params</span>[<span class="ruby-value">:name</span>], <span class="ruby-identifier">profile</span><span class="ruby-operator">:</span> <span class="ruby-ivar">@total_wc</span>.<span class="ruby-identifier">to_param</span> })
+    <span class="ruby-identifier">news</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">news_id</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">ps</span> = <span class="ruby-constant">ProfileSource</span>.<span class="ruby-identifier">create</span>({ <span class="ruby-identifier">profile_id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">prof</span>.<span class="ruby-identifier">id</span>, <span class="ruby-identifier">source</span><span class="ruby-operator">:</span> <span class="ruby-identifier">news_id</span> })
+    <span class="ruby-keyword">end</span>
+
+    <span class="ruby-identifier">save_article</span> <span class="ruby-ivar">@total_wc</span>, <span class="ruby-identifier">prof</span>.<span class="ruby-identifier">id</span>, <span class="ruby-string">&#39;prof&#39;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">prof</span>.<span class="ruby-identifier">present?</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-import" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">import</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="import-source">
+            <pre><span class="ruby-comment"># File app/controllers/articles_controller.rb, line 35</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">import</span>
+  <span class="ruby-identifier">news</span> = []
+  <span class="ruby-identifier">topics</span> = []
+
+  <span class="ruby-identifier">news</span> = <span class="ruby-identifier">params</span>[<span class="ruby-value">:selected</span>][<span class="ruby-string">&quot;news&quot;</span>].<span class="ruby-identifier">map</span>{ <span class="ruby-operator">|</span><span class="ruby-identifier">id</span><span class="ruby-operator">|</span> <span class="ruby-identifier">id</span>.<span class="ruby-identifier">to_i</span> } <span class="ruby-keyword">unless</span> <span class="ruby-identifier">params</span>[<span class="ruby-value">:selected</span>][<span class="ruby-string">&quot;news&quot;</span>].<span class="ruby-identifier">nil?</span>
+  <span class="ruby-identifier">topics</span> = <span class="ruby-identifier">params</span>[<span class="ruby-value">:selected</span>][<span class="ruby-string">&quot;topics&quot;</span>] <span class="ruby-keyword">unless</span> <span class="ruby-identifier">params</span>[<span class="ruby-value">:selected</span>][<span class="ruby-string">&quot;topics&quot;</span>].<span class="ruby-identifier">nil?</span>
+
+  <span class="ruby-ivar">@articles</span> = []
+  <span class="ruby-identifier">proced_id</span> = []
+
+  <span class="ruby-identifier">topics</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">topic</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">arts</span> = <span class="ruby-constant">JSON</span>.<span class="ruby-identifier">parse</span> <span class="ruby-identifier">open</span>(<span class="ruby-node">&quot;#{Settings.api.host}/api/v1/?topic_id=#{topic}&quot;</span>).<span class="ruby-identifier">read</span>
+    <span class="ruby-identifier">arts</span>[<span class="ruby-string">&#39;news&#39;</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">art</span><span class="ruby-operator">|</span>
+      <span class="ruby-keyword">unless</span> <span class="ruby-identifier">art</span>[<span class="ruby-string">&#39;body&#39;</span>].<span class="ruby-identifier">nil?</span> <span class="ruby-operator">||</span> <span class="ruby-constant">News</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">news_id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">art</span>[<span class="ruby-string">&#39;id&#39;</span>])
+        <span class="ruby-ivar">@articles</span>.<span class="ruby-identifier">push</span> <span class="ruby-identifier">art</span>
+      <span class="ruby-keyword">end</span>
+      <span class="ruby-identifier">proced_id</span>.<span class="ruby-identifier">push</span> <span class="ruby-identifier">art</span>[<span class="ruby-string">&#39;id&#39;</span>]
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">news</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">news_id</span><span class="ruby-operator">|</span>
+    <span class="ruby-keyword">unless</span> <span class="ruby-identifier">proced_id</span>.<span class="ruby-identifier">include?</span> <span class="ruby-identifier">news_id</span>
+      <span class="ruby-identifier">arts</span> = <span class="ruby-constant">JSON</span>.<span class="ruby-identifier">parse</span> <span class="ruby-identifier">open</span>(<span class="ruby-node">&quot;#{Settings.api.host}/api/v1/?news_id=#{news_id}&quot;</span>).<span class="ruby-identifier">read</span>
+      <span class="ruby-identifier">arts</span>[<span class="ruby-string">&#39;news&#39;</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">art</span><span class="ruby-operator">|</span>
+        <span class="ruby-keyword">unless</span> <span class="ruby-identifier">art</span>[<span class="ruby-string">&#39;body&#39;</span>].<span class="ruby-identifier">nil?</span> <span class="ruby-operator">||</span> <span class="ruby-constant">News</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">news_id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">art</span>[<span class="ruby-string">&#39;id&#39;</span>])
+          <span class="ruby-ivar">@articles</span>.<span class="ruby-identifier">push</span> <span class="ruby-identifier">art</span>
+        <span class="ruby-keyword">end</span>
+      <span class="ruby-keyword">end</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-ivar">@articles</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">art</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">save_article</span> <span class="ruby-identifier">art</span>[<span class="ruby-string">&#39;body&#39;</span>], <span class="ruby-identifier">art</span>[<span class="ruby-string">&#39;id&#39;</span>], <span class="ruby-string">&#39;raw&#39;</span>
+    <span class="ruby-identifier">save_article</span> <span class="ruby-identifier">word_count</span>(<span class="ruby-identifier">art</span>[<span class="ruby-string">&#39;body&#39;</span>]), <span class="ruby-identifier">art</span>[<span class="ruby-string">&#39;id&#39;</span>], <span class="ruby-string">&#39;wc&#39;</span>
+
+    <span class="ruby-identifier">news</span> = <span class="ruby-constant">News</span>.<span class="ruby-identifier">new</span>
+    <span class="ruby-identifier">news</span>.<span class="ruby-identifier">news_id</span> = <span class="ruby-identifier">art</span>[<span class="ruby-string">&#39;id&#39;</span>]
+    <span class="ruby-identifier">news</span>.<span class="ruby-identifier">topic_id</span> = <span class="ruby-identifier">art</span>[<span class="ruby-string">&#39;topic_id&#39;</span>]
+    <span class="ruby-identifier">news</span>.<span class="ruby-identifier">title</span> = <span class="ruby-identifier">art</span>[<span class="ruby-string">&#39;title&#39;</span>]
+    <span class="ruby-identifier">news</span>.<span class="ruby-identifier">source</span> = <span class="ruby-identifier">art</span>[<span class="ruby-string">&#39;source&#39;</span>]
+    <span class="ruby-identifier">news</span>.<span class="ruby-identifier">url</span> = <span class="ruby-identifier">art</span>[<span class="ruby-string">&#39;url&#39;</span>]
+    <span class="ruby-identifier">news</span>.<span class="ruby-identifier">host</span> = <span class="ruby-identifier">art</span>[<span class="ruby-string">&#39;host&#39;</span>]
+    <span class="ruby-identifier">news</span>.<span class="ruby-identifier">save</span>
+  <span class="ruby-keyword">end</span>
+
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-imported_list" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">imported_list</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="imported_list-source">
+            <pre><span class="ruby-comment"># File app/controllers/articles_controller.rb, line 21</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">imported_list</span>
+  <span class="ruby-ivar">@news</span> = <span class="ruby-constant">News</span>.<span class="ruby-identifier">all</span>().<span class="ruby-identifier">order</span>(<span class="ruby-string">&quot;created_at DESC&quot;</span>).<span class="ruby-identifier">page</span> <span class="ruby-identifier">params</span>[<span class="ruby-value">:page</span>]
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-index" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">index</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="index-source">
+            <pre><span class="ruby-comment"># File app/controllers/articles_controller.rb, line 4</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">index</span>
+  <span class="ruby-ivar">@news</span> = <span class="ruby-constant">News</span>.<span class="ruby-identifier">all</span>().<span class="ruby-identifier">order</span>(<span class="ruby-string">&quot;created_at DESC&quot;</span>).<span class="ruby-identifier">page</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:page</span>]).<span class="ruby-identifier">per</span>(<span class="ruby-value">10</span>)
+  <span class="ruby-ivar">@sign_patterns</span> = {<span class="ruby-value">-1</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;panel-danger&quot;</span>, <span class="ruby-value">0</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;panel-info&quot;</span>, <span class="ruby-value">1</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;panel-success&quot;</span>}
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-picker" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">picker</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="picker-source">
+            <pre><span class="ruby-comment"># File app/controllers/articles_controller.rb, line 9</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">picker</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-push_rate" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">push_rate</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="push_rate-source">
+            <pre><span class="ruby-comment"># File app/controllers/articles_controller.rb, line 103</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">push_rate</span>
+  <span class="ruby-identifier">news_id</span> = <span class="ruby-identifier">params</span>[<span class="ruby-value">:news_id</span>]
+  <span class="ruby-identifier">sign</span> = <span class="ruby-identifier">params</span>[<span class="ruby-value">:sign</span>]
+  <span class="ruby-identifier">user_id</span> = <span class="ruby-identifier">current_user</span>.<span class="ruby-identifier">id</span>
+
+  <span class="ruby-identifier">news</span> = <span class="ruby-constant">News</span>.<span class="ruby-identifier">where</span>(<span class="ruby-identifier">news_id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">news_id</span>).<span class="ruby-identifier">first</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">news</span>.<span class="ruby-identifier">sign</span>(<span class="ruby-identifier">user_id</span>).<span class="ruby-identifier">nil?</span>
+    <span class="ruby-identifier">rate</span> = <span class="ruby-constant">UserDiscrimination</span>.<span class="ruby-identifier">new</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">rate</span> = <span class="ruby-identifier">news</span>.<span class="ruby-identifier">user_discriminations</span>.<span class="ruby-identifier">where</span>(<span class="ruby-identifier">user_id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">user_id</span>).<span class="ruby-identifier">first</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">rate</span>.<span class="ruby-identifier">news</span> = <span class="ruby-identifier">news</span>
+  <span class="ruby-identifier">rate</span>.<span class="ruby-identifier">sign</span> = <span class="ruby-identifier">sign</span>
+  <span class="ruby-identifier">rate</span>.<span class="ruby-identifier">user</span> = <span class="ruby-identifier">current_user</span>
+  <span class="ruby-identifier">status</span> = <span class="ruby-identifier">rate</span>.<span class="ruby-identifier">save</span>
+
+  <span class="ruby-identifier">checked</span> = <span class="ruby-constant">UserDiscrimination</span>.<span class="ruby-identifier">where</span>(<span class="ruby-identifier">user_id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">user_id</span>).<span class="ruby-identifier">count</span>
+  <span class="ruby-identifier">render</span> <span class="ruby-identifier">json</span><span class="ruby-operator">:</span> { <span class="ruby-identifier">status</span><span class="ruby-operator">:</span> <span class="ruby-identifier">status</span>,  <span class="ruby-identifier">checked</span><span class="ruby-operator">:</span> <span class="ruby-identifier">checked</span> }
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-tuner" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">tuner</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="tuner-source">
+            <pre><span class="ruby-comment"># File app/controllers/articles_controller.rb, line 12</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">tuner</span>
+  <span class="ruby-ivar">@selectors</span> = [
+    { <span class="ruby-identifier">label_type</span><span class="ruby-operator">:</span> <span class="ruby-string">&#39;primary&#39;</span>, <span class="ruby-identifier">axis</span><span class="ruby-operator">:</span> <span class="ruby-string">&#39;X&#39;</span> },
+    { <span class="ruby-identifier">label_type</span><span class="ruby-operator">:</span> <span class="ruby-string">&#39;success&#39;</span>, <span class="ruby-identifier">axis</span><span class="ruby-operator">:</span> <span class="ruby-string">&#39;Y&#39;</span> }
+  ]
+
+  <span class="ruby-ivar">@profiles</span> = <span class="ruby-constant">Profile</span>.<span class="ruby-identifier">all</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-x_similar" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">x_similar</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="x_similar-source">
+            <pre><span class="ruby-comment"># File app/controllers/articles_controller.rb, line 25</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">x_similar</span>
+  <span class="ruby-identifier">prof_id</span> = <span class="ruby-identifier">params</span>[<span class="ruby-value">:id</span>]
+  <span class="ruby-ivar">@sim_box</span> = <span class="ruby-identifier">similar</span> <span class="ruby-identifier">prof_id</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-y_similar" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">y_similar</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="y_similar-source">
+            <pre><span class="ruby-comment"># File app/controllers/articles_controller.rb, line 30</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">y_similar</span>
+  <span class="ruby-identifier">prof_id</span> = <span class="ruby-identifier">params</span>[<span class="ruby-value">:id</span>]
+  <span class="ruby-ivar">@sim_box</span> = <span class="ruby-identifier">similar</span> <span class="ruby-identifier">prof_id</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+  </section>
+</main>
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="http://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="http://docs.seattlerb.org/rdoc/">RDoc</a> 4.2.0.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+

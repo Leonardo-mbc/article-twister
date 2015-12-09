@@ -1,0 +1,17 @@
+Thu, 10 Dec 2015 02:59:45 +0900
+README.rdoc	Thu, 19 Nov 2015 20:45:15 +0900
+app/controllers/application_controller.rb	Mon, 23 Nov 2015 17:58:57 +0900
+app/controllers/articles_controller.rb	Thu, 10 Dec 2015 01:05:38 +0900
+app/controllers/concerns/word_processor.rb	Thu, 10 Dec 2015 00:46:27 +0900
+app/controllers/log_controller.rb	Thu, 19 Nov 2015 23:51:12 +0900
+app/controllers/users/omniauth_callbacks_controller.rb	Thu, 19 Nov 2015 23:19:42 +0900
+app/controllers/users_controller.rb	Thu, 10 Dec 2015 00:48:17 +0900
+app/helpers/application_helper.rb	Thu, 19 Nov 2015 20:45:15 +0900
+app/helpers/articles_helper.rb	Thu, 19 Nov 2015 21:25:33 +0900
+app/helpers/log_helper.rb	Thu, 19 Nov 2015 21:48:08 +0900
+app/helpers/users_helper.rb	Wed, 09 Dec 2015 18:24:50 +0900
+app/models/news.rb	Wed, 09 Dec 2015 16:37:54 +0900
+app/models/profile.rb	Wed, 02 Dec 2015 17:40:11 +0900
+app/models/profile_source.rb	Wed, 02 Dec 2015 18:17:54 +0900
+app/models/user.rb	Wed, 09 Dec 2015 15:29:58 +0900
+app/models/user_discrimination.rb	Wed, 09 Dec 2015 15:31:29 +0900
