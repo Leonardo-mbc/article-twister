@@ -134,6 +134,12 @@ private
       end
     end
 
+    Open3.popen3("#{Rails.root}/app/bin/similar #{public_dir}/profiles/#{prof_id}.txt #{public_dir}/user_profiles/#{current_user.id}.txt") do |stdin, stdout, stderr|
+      stdin.close
+      sim = stdout.read.to_f
+      sim_box['user'] = sim
+    end
+
     sim_box
   end
 

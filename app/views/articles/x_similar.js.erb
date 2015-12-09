@@ -1,5 +1,9 @@
 <% @sim_box.each do |id, value| %>
-    plotter.mount('x', <%= id %>, <%= value %>);
+    <% if id == 'user' %>
+        plotter.mount('x', 'user', <%= value %>);
+    <% else %>
+        plotter.mount('x', <%= id %>, <%= value %>);
+    <% end %>
 <% end %>
 
 plotter.plot();

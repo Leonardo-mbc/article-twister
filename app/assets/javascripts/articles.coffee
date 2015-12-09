@@ -249,6 +249,7 @@ class @Plotter
         @stage = d3.select ".stage"
             .append 'svg'
         @dataset = []
+        @user_data = []
 
         @stage.attr 'width', @width
             .attr 'height', @height
@@ -278,6 +279,7 @@ class @Plotter
 
     change_axis: (axis, name) ->
         $("[data-title='#{axis}']").html name
+            .parent().removeClass('open');
         $("[data-label='#{axis}']").html name
 
     clear_axis: (axis) =>
@@ -291,15 +293,27 @@ class @Plotter
     mount: (axis, id, value) =>
         switch axis
             when 'x'
-                if @dataset[id]
-                    @dataset[id].x = value
+                if id is 'user'
+                    if @user_data
+                        @user_data.x = value
+                        @user_data.y = 0.5 unless @user_data.y
                 else
-                    @dataset[id] = { x: value, y: 0.5 }
+                    if @dataset[id]
+                        @dataset[id].x = value
+                    else
+                        @dataset[id] = { x: value, y: 0.5 }
             when 'y'
-                if @dataset[id]
-                    @dataset[id].y = value
+                if id is 'user'
+                    if @user_data
+                        @user_data.x = 0.5 unless @user_data.x
+                        @user_data.y = value
+                    else
+                        @user_data = { x: 0.5, y: value }
                 else
-                    @dataset[id] = { x: 0.5, y: value }
+                    if @dataset[id]
+                        @dataset[id].y = value
+                    else
+                        @dataset[id] = { x: 0.5, y: value }
 
     plot: () =>
         self = this
@@ -326,6 +340,14 @@ class @Plotter
                         .attr 'xlink:href', '/assets/document_gray.svg'
                 .on 'click', =>
                     console.log "open", news_id
+
+        @stage.append 'image'
+            .attr 'x', @xScale(@user_data.x) - width * 0.5
+            .attr 'y', @yScale(@user_data.y) - height * 0.5
+            .attr 'class', 'document'
+            .attr 'width', width
+            .attr 'height', height
+            .attr 'xlink:href', '/assets/user.svg'
 
 class @Rating
     constructor: (user_id) ->
