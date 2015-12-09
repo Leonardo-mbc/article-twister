@@ -40,7 +40,7 @@ class @Picker
 
         if items.topics
             $.each items.topics, (key, item) =>
-                id =  { topic_id: item.id }
+                id = { topic_id: item.id }
 
                 tr_tag = $("<tr>")
                 $(tr_tag).attr 'data-id', item.id
@@ -321,8 +321,71 @@ class @Plotter
                     self.picker.fetch({ news_id: news_id }, "details")
                     d3.select(this)
                         .attr 'xlink:href', '/assets/document_blue.svg'
-                .on 'mouseout',  ->
+                .on 'mouseout', ->
                     d3.select(this)
                         .attr 'xlink:href', '/assets/document_gray.svg'
                 .on 'click', =>
                     console.log "open", news_id
+
+class @Rating
+    constructor: (user_id) ->
+        @user_id = user_id
+
+    rating_enable: ->
+        $("[data-news]").draggable
+            axis: "x"
+            revert: true
+            revertDuration: 100
+            opacity: 0.7
+            handle: '.panel-heading'
+            scroll: false
+
+            drag: (e, ui) ->
+                x = ui.position.left
+
+                if 150 < x
+                    $(ui.helper).removeClass "panel-info"
+                        .addClass "panel-success"
+                if x < -150
+                    $(ui.helper).removeClass "panel-info"
+                        .addClass "panel-danger"
+                if -150 <= x <= 150
+                    $(ui.helper).removeClass "panel-info, panel-danger"
+                        .addClass "panel-info"
+
+            stop: (e, ui) =>
+                x = ui.position.left
+                id = $(ui.helper).data 'news'
+
+                if 150 < x
+                    sign = 1
+                if x < -150
+                    sign = -1
+                if -150 <= x <= 150
+                    sign = 0
+
+                @push id, sign
+
+    push: (id, sign) ->
+        $.ajax
+            url: '/articles/push_rate'
+            type: 'get'
+            data:
+                news_id: id
+                sign: sign
+            dataType: 'json'
+
+            success: (data) ->
+                title = $("[data-news='#{id}']").find 'h3'
+                re = new RegExp "glyphicon-ok", "i"
+
+                if !title.html().match(re)
+                    $(title).prepend '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span> '
+
+                $(".progress-bar").animate
+                    width: 100 * data.checked / 50 +"%"
+                ,
+                    duration: 300
+
+                if 50 <= data.checked
+                    make_profile()

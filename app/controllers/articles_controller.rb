@@ -1,6 +1,7 @@
 class ArticlesController < ApplicationController
   def index
-    @news = News.all().order("created_at DESC").page params[:page]
+    @news = News.all().order("created_at DESC").page(params[:page]).per(10)
+    @sign_patterns = {-1 => "panel-danger", 0 => "panel-info", 1 => "panel-success"}
   end
 
   def picker
@@ -13,6 +14,10 @@ class ArticlesController < ApplicationController
     ]
 
     @profiles = Profile.all
+  end
+
+  def imported_list
+    @news = News.all().order("created_at DESC").page params[:page]
   end
 
   def x_similar
@@ -91,6 +96,27 @@ class ArticlesController < ApplicationController
 
       save_articles @total_wc, prof.id, 'prof' if prof.present?
     end
+  end
+
+  def push_rate
+    news_id = params[:news_id]
+    sign = params[:sign]
+    user_id = current_user.id
+
+    news = News.where(news_id: news_id).first
+    if news.sign(user_id).nil?
+      rate = UserDiscrimination.new
+    else
+      rate = news.user_discriminations.where(user_id: user_id).first
+    end
+
+    rate.news = news
+    rate.sign = sign
+    rate.user = current_user
+    status = rate.save
+
+    checked = UserDiscrimination.where(user_id: user_id).count
+    render json: { status: status,  checked: checked }
   end
 
 private

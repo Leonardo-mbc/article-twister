@@ -1,4 +1,6 @@
 class User < ActiveRecord::Base
+  has_many :user_discriminations
+
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
@@ -9,7 +11,7 @@ class User < ActiveRecord::Base
 
         email = auth.info.email
         email = self.dummy_email auth if email.nil?
-        
+
         unless user
             user = User.create(
                 uid:      auth.uid,

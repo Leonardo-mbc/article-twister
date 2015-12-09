@@ -1,0 +1,40 @@
+<ul class="nav nav-tabs">
+    <li class="active" data-tab='imported_news'>
+        <a data-toggle="tab">Imported News List</a>
+    </li>
+    <li data-tab='items'>
+        <a data-toggle="tab">Selected item</a>
+    </li>
+</ul>
+
+<table class="imported_news-cells table table-striped table-hover">
+    <tr>
+        <th colspan="2"><%= page_entries_info @news %></th>
+        <th>topic_id</th>
+    </tr>
+    <% @news.each do |item| %>
+    <tr onClick="picker.select(this, <%= item.news_id %>)">
+        <td>
+            <i class="fa fa-check-circle" style="opacity: 0;"></i>
+        </td>
+        <td><%= item.title %></td>
+        <td><%= item.topic_id %></td>
+    </tr>
+    <% end %>
+</table>
+<table class="items-cells table table-striped table-hover"></table>
+
+<div class="import">
+    <div class="input-group">
+        <input type="text" class="form-control" id="profile_name" placeholder="プロファイル名">
+        <span class="input-group-btn">
+            <a class="btn btn-primary" data-combine="all">プロファイルを作成</a>
+        </span>
+    </div>
+</div>
+
+<%= paginate @news %>
+
+<%= javascript_tag do %>
+    var picker; $(function() { picker = new Picker("<%= Settings.api.host %>"); });
+<% end %>

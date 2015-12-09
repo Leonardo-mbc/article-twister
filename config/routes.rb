@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'users/profile_update'
+
   get 'log/in'
   get 'log/out'
 
@@ -7,14 +9,23 @@ Rails.application.routes.draw do
   resources :articles do
     collection do
       get :picker
+      get :imported_list
+      get :tuner
+
       get :import
       get :combine
-      get :tuner
+      get :push_rate
     end
 
     member do
       get :x_similar
       get :y_similar
+    end
+  end
+
+  resources :users do
+    collection do
+      get :profile_update
     end
   end
 
