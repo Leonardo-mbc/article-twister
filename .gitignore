@@ -21,3 +21,4 @@ app/bin
 public/articles_raw
 public/articles_wc
 public/profiles
+public/user_profiles

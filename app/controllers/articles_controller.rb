@@ -1,4 +1,6 @@
 class ArticlesController < ApplicationController
+  include WordProcessor
+
   def index
     @news = News.all().order("created_at DESC").page(params[:page]).per(10)
     @sign_patterns = {-1 => "panel-danger", 0 => "panel-info", 1 => "panel-success"}
@@ -62,8 +64,8 @@ class ArticlesController < ApplicationController
     end
 
     @articles.each do |art|
-      save_articles art['body'], art['id'], 'raw'
-      save_articles word_count(art['body']), art['id'], 'wc'
+      save_article art['body'], art['id'], 'raw'
+      save_article word_count(art['body']), art['id'], 'wc'
 
       news = News.new
       news.news_id = art['id']
@@ -94,7 +96,7 @@ class ArticlesController < ApplicationController
         ps = ProfileSource.create({ profile_id: prof.id, source: news_id })
       end
 
-      save_articles @total_wc, prof.id, 'prof' if prof.present?
+      save_article @total_wc, prof.id, 'prof' if prof.present?
     end
   end
 
@@ -147,43 +149,4 @@ private
 
     #spawn "./count #{public_dir}/articles_raw/#{art[:id]}.txt > #{public_dir}/articles/#{art[:id]}.txt", :chdir => "#{Rails.root}/app/bin"
   end
-
-  def save_articles(body, news_id, dir)
-    public_dir = "#{Rails.root}/public"
-
-    case dir
-      when 'raw'
-        f = File.open("#{public_dir}/articles_raw/#{news_id}.txt", 'w')
-        f.puts body
-        f.close
-
-      when 'wc'
-        f = File.open("#{public_dir}/articles_wc/#{news_id}.txt", 'w')
-        body.each do |w, c|
-          f.puts "#{w},#{c}"
-        end
-        f.close
-
-      when 'prof'
-        f = File.open("#{public_dir}/profiles/#{news_id}.txt", 'w')
-        body.each do |w, c|
-          f.puts "#{w},#{c}"
-        end
-        f.close
-    end
-  end
-
-  def wc_hash(news_id)
-    public_dir = "#{Rails.root}/public"
-
-    article_wc = []
-    art = File.open("#{public_dir}/articles_wc/#{news_id}.txt", 'r').read
-    art.split("\n").each do |line|
-      wc = line.split(',')
-      article_wc.push({ :word => wc[0], :count => wc[1].to_i })
-    end
-
-    article_wc
-  end
-
 end
