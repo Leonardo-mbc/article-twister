@@ -36,5 +36,5 @@
 <%= paginate @news %>
 
 <%= javascript_tag do %>
-    var picker; $(function() { picker = new Picker("<%= Settings.api.host %>"); });
+    var picker; $(function() { picker = new Picker("<%= Settings.api.ajax_host %>"); });
 <% end %>

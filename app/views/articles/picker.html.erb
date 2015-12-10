@@ -25,7 +25,7 @@
 
 <%= javascript_tag do %>
     $(function() {
-        var picker = new Picker("<%= Settings.api.host %>");
+        var picker = new Picker("<%= Settings.api.ajax_host %>");
         picker.fetch({}, 'topic');
     });
 <% end %>

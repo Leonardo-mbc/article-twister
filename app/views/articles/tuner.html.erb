@@ -24,7 +24,7 @@
 <%= javascript_tag do %>
     var plotter;
     $(function() {
-        var picker = new Picker("<%= Settings.api.host %>");
+        var picker = new Picker("<%= Settings.api.ajax_host %>");
         plotter = new Plotter(500, 500, picker);
     });
 <% end %>

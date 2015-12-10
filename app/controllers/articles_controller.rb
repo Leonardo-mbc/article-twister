@@ -43,7 +43,7 @@ class ArticlesController < ApplicationController
     proced_id = []
 
     topics.each do |topic|
-      arts = JSON.parse open("#{Settings.api.host}/api/v1/?topic_id=#{topic}").read
+      arts = JSON.parse open("#{Settings.api.rails_host}/api/v1/?topic_id=#{topic}").read
       arts['news'].each do |art|
         unless art['body'].nil? || News.exists?(news_id: art['id'])
           @articles.push art
@@ -54,7 +54,7 @@ class ArticlesController < ApplicationController
 
     news.each do |news_id|
       unless proced_id.include? news_id
-        arts = JSON.parse open("#{Settings.api.host}/api/v1/?news_id=#{news_id}").read
+        arts = JSON.parse open("#{Settings.api.rails_host}/api/v1/?news_id=#{news_id}").read
         arts['news'].each do |art|
           unless art['body'].nil? || News.exists?(news_id: art['id'])
             @articles.push art

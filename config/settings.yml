@@ -1,14 +1,14 @@
 development:
   api:
-    host: "http://news.leonardo-mbc.blue"
-    #host: "http://192.168.0.50"
+    ajax_host: "http://news.leonardo-mbc.blue"
+    rails_host: "http://news.leonardo-mbc.blue"
 
 test:
   api:
-    #host: "http://news.leonardo-mbc.blue"
-    host: "http://192.168.0.50"
+    ajax_host: "http://news.leonardo-mbc.blue"
+    rails_host: "http://192.168.0.50"
 
 production:
   api:
-    #host: "http://news.leonardo-mbc.blue"
-    host: "http://192.168.0.50"
+    ajax_host: "http://news.leonardo-mbc.blue"
+    rails_host: "http://192.168.0.50"
