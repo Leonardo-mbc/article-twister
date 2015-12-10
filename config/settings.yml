@@ -6,9 +6,9 @@ development:
 test:
   api:
     ajax_host: "http://news.leonardo-mbc.blue"
-    rails_host: "Ak1ba-Edge.local/news/"
+    rails_host: "http://Ak1ba-Edge.local/news/"
 
 production:
   api:
     ajax_host: "http://news.leonardo-mbc.blue"
-    rails_host: "Ak1ba-Edge.local/news/"
+    rails_host: "http://Ak1ba-Edge.local/news/"
