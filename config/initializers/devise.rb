@@ -260,4 +260,5 @@ Devise.setup do |config|
   # so you need to do it manually. For the users scope, it would be:
   config.omniauth :facebook, ENV['FACEBOOK_KEY'], ENV['FACEBOOK_SECRET']
   config.omniauth :twitter, ENV['TWITTER_KEY'], ENV['TWITTER_SECRET']
+  config.secret_key = '08d940c5c7c6f95df962705af68d1ebe7a1e67f1dd48b1d3cf8c9e8dbe69463ec3756b2a96b0bf980851f211fbca2d187cbba489567cd1b1fed6dd67a47af39f'
 end
