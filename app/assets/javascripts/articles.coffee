@@ -284,8 +284,13 @@ class @Plotter
 
     clear_axis: (axis) =>
         @dataset.forEach (data, news_id) =>
-            @dataset[news_id].x = 0.5 if axis is 'X'
-            @dataset[news_id].y = 0.5 if axis is 'Y'
+            if axis is 'X'
+                @dataset[news_id].x = 0.5
+                @user_data.x = 0.5
+            if axis is 'Y'
+                @dataset[news_id].y = 0.5
+                @user_data.y = 0.5
+
             $("[data-title='#{axis}']").html "#{axis}軸へのマッピング"
 
         @plot()

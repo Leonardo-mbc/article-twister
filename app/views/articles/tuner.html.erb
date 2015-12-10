@@ -3,6 +3,10 @@
         <a class="btn btn-<%= selector[:label_type] %> btn-xs" onClick="plotter.clear_axis('<%= selector[:axis] %>')" data-title="<%= selector[:axis] %>"><%= selector[:axis] %>軸へのマッピング</a>
         <a aria-expanded="false" class="btn btn-<%= selector[:label_type] %> btn-xs dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
         <ul class="dropdown-menu">
+            <% path = x_similar_article_path(0) if selector[:axis] == 'X' %>
+            <% path = y_similar_article_path(0) if selector[:axis] == 'Y' %>
+            <li onClick="plotter.change_axis('<%= selector[:axis] %>', '自分のプロファイル')"><%= link_to '自分のプロファイル', path, remote: true %></li>
+            <li class="divider"></li>
             <% @profiles.each do |prof| %>
                 <% path = x_similar_article_path(prof.id) if selector[:axis] == 'X' %>
                 <% path = y_similar_article_path(prof.id) if selector[:axis] == 'Y' %>

@@ -19,7 +19,7 @@ class ArticlesController < ApplicationController
   end
 
   def imported_list
-    @news = News.all().order("created_at DESC").page params[:page]
+    @news = News.all().order("created_at DESC").page(params[:page])
   end
 
   def x_similar
@@ -125,8 +125,16 @@ private
   def similar(prof_id)
     public_dir = "#{Rails.root}/public"
     sim_box = Hash.new
+
+    if prof_id == '0'
+      base_prof = "#{public_dir}/user_profiles/#{current_user.id}.txt"
+    else
+      base_prof = "#{public_dir}/profiles/#{prof_id}.txt"
+    end
+
     Dir::glob("#{public_dir}/articles_wc/*.txt").each do |data|
-      Open3.popen3("#{Rails.root}/app/bin/similar #{public_dir}/profiles/#{prof_id}.txt #{data}") do |stdin, stdout, stderr|
+      puts "#{Rails.root}/app/bin/similar #{base_prof} #{data}"
+      Open3.popen3("#{Rails.root}/app/bin/similar #{base_prof} #{data}") do |stdin, stdout, stderr|
         stdin.close
         sim = stdout.read.to_f
         id = data.scan(/([0-9]+?)\.txt/).flatten.first
@@ -134,7 +142,7 @@ private
       end
     end
 
-    Open3.popen3("#{Rails.root}/app/bin/similar #{public_dir}/profiles/#{prof_id}.txt #{public_dir}/user_profiles/#{current_user.id}.txt") do |stdin, stdout, stderr|
+    Open3.popen3("#{Rails.root}/app/bin/similar #{base_prof} #{public_dir}/user_profiles/#{current_user.id}.txt") do |stdin, stdout, stderr|
       stdin.close
       sim = stdout.read.to_f
       sim_box['user'] = sim
