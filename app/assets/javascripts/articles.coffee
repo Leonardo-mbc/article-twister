@@ -335,7 +335,7 @@ class @Plotter
                 .attr 'class', 'document'
                 .attr 'width', width
                 .attr 'height', height
-                .attr 'xlink:href', '/assets/document_gray.svg'
+                .attr 'xlink:href', '/images/document_gray.svg'
                 .on 'mouseover', ->
                     self.picker.fetch({ news_id: news_id }, "details")
                     d3.select(this)
@@ -352,7 +352,7 @@ class @Plotter
             .attr 'class', 'document'
             .attr 'width', width
             .attr 'height', height
-            .attr 'xlink:href', '/assets/user.svg'
+            .attr 'xlink:href', '/images/user.svg'
 
 class @Rating
     constructor: (user_id) ->
