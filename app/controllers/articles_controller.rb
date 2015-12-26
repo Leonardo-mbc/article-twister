@@ -121,6 +121,25 @@ class ArticlesController < ApplicationController
     render json: { status: status,  checked: checked }
   end
 
+  def clustering
+    trash_dir = "#{Rails.root}/tmp/cluster_trash"
+    filename = Time.now.to_i
+    divide = params[:div]
+
+    f = File.open("#{trash_dir}/#{filename}.txt", 'w')
+    params[:map].each do |item_ary|
+      item = item_ary.second
+      f.puts [item[:news_id], item[:x], item[:y]].join(',')
+    end
+
+    f.close
+
+    stdout = `#{Rails.root}/app/bin/k-means++ #{trash_dir}/#{filename}.txt #{divide}`
+    result = stdout.split('-')
+    @gravities = result.first.split("\n").map{|l| l.split(',')}.reject(&:blank?)
+    @clusters = result.second.split("\n").map{|l| l.split(',')}.reject(&:blank?)
+  end
+
 private
   def similar(prof_id)
     public_dir = "#{Rails.root}/public"

@@ -330,6 +330,7 @@ class @Plotter
 
         @dataset.forEach (data, news_id) =>
             @stage.append 'image'
+                .attr 'id', news_id
                 .attr 'x', @xScale(data.x) - width * 0.5
                 .attr 'y', @yScale(data.y) - height * 0.5
                 .attr 'class', 'document'
@@ -339,10 +340,14 @@ class @Plotter
                 .on 'mouseover', ->
                     self.picker.fetch({ news_id: news_id }, "details")
                     d3.select(this)
-                        .attr 'xlink:href', '/assets/document_blue.svg'
+                        .attr 'xlink:href', '/images/document_blue.svg'
                 .on 'mouseout', ->
-                    d3.select(this)
-                        .attr 'xlink:href', '/assets/document_gray.svg'
+                    item = d3.select(this)
+                    cluster = item.attr 'cluster'
+                    if cluster
+                        item.attr 'xlink:href', "/images/document_clusters/#{cluster}.svg"
+                    else
+                        item.attr 'xlink:href', '/images/document_gray.svg'
                 .on 'click', =>
                     console.log "open", news_id
 
@@ -353,6 +358,28 @@ class @Plotter
             .attr 'width', width
             .attr 'height', height
             .attr 'xlink:href', '/images/user.svg'
+
+        @clustering()
+
+    clustering: () =>
+        map = []
+        @dataset.forEach (data, news_id) =>
+            map.push { news_id: news_id, x: data.x, y: data.y }
+
+        $.ajax
+            url: '/articles/clustering'
+            type: 'post'
+            data:
+                map: map
+                div: 4
+
+            error: (data) ->
+                console.log data
+
+    svg_replace: (id, cluster) =>
+        $(".stage").find "image##{id}"
+            .attr 'href', "/images/document_clusters/#{cluster}.svg"
+            .attr 'cluster', cluster
 
 class @Rating
     constructor: (user_id) ->

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32">
+    <desc iVinci="yes" version="4.6" gridStep="20" showGrid="no" snapToGrid="no" codePlatform="0"/>
+    <g id="Layer1" name="Layer 1" opacity="1">
+        <g id="Shape1">
+            <desc shapeID="1" type="0" basicInfo-basicType="0" basicInfo-roundedRectRadius="12" basicInfo-polygonSides="6" basicInfo-starPoints="5" bounding="rect(-9.5,-13.5,19,27)" text="" font-familyName="" font-pixelSize="20" font-bold="0" font-underline="0" font-alignment="1" strokeStyle="0" markerStart="0" markerEnd="0" shadowEnabled="0" shadowOffsetX="0" shadowOffsetY="2" shadowBlur="4" shadowOpacity="160" blurEnabled="0" blurRadius="4" transform="matrix(1,0,0,1,16.5,16.5)" pers-center="0,0" pers-size="0,0" pers-start="0,0" pers-end="0,0" locked="0" mesh="" flag=""/>
+            <path id="shapePath1" d="M19,3 L9.00853,3 C7.89925,3 7,3.89834 7,5.00733 L7,27.9927 C7,29.1013 7.89093,30 8.99742,30 L24.0026,30 C25.1057,30 26,29.1091 26,28.0026 L26,11 L21.0059,11 C19.8981,11 19,10.1133 19,9.0019 L19,3 M20,3 L20,8.99707 C20,9.55097 20.451,10 20.9908,10 L26,10 L20,3 Z" style="stroke:none;fill-rule:evenodd;fill:#770faa;fill-opacity:1;"/>
+        </g>
+    </g>
+</svg>

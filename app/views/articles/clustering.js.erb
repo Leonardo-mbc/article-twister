@@ -1,0 +1,7 @@
+<% @clusters.each do |item| %>
+    plotter.svg_replace(<%= item.first %>, <%= item.second %>)
+<% end %>
+
+<% @gravities.each do |grav| %>
+    //console.log(<%= grav[0] %>, <%= grav[1] %>, <%= grav[2] %>);
+<% end %>
