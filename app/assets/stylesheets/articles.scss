@@ -25,6 +25,18 @@ image.document {
     cursor: pointer;
 }
 
+text.gravity {
+    fill: #555555;
+    text-anchor: middle;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+
+    &:hover {
+        fill: #157EFB;
+    }
+}
+
 .checker {
     cursor: pointer;
 }

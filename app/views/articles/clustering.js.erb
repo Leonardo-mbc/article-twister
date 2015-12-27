@@ -3,5 +3,5 @@
 <% end %>
 
 <% @gravities.each do |grav| %>
-    //console.log(<%= grav[0] %>, <%= grav[1] %>, <%= grav[2] %>);
+    plotter.plot_gravities(<%= grav[0] %>, <%= grav[1] %>, <%= grav[2] %>);
 <% end %>

@@ -327,6 +327,7 @@ class @Plotter
         width = @padding * scale
         height = @padding * scale
         @stage.selectAll('image').remove()
+        @stage.selectAll('text').remove()
 
         @dataset.forEach (data, news_id) =>
             @stage.append 'image'
@@ -375,6 +376,17 @@ class @Plotter
 
             error: (data) ->
                 console.log data
+
+    plot_gravities: (id, x, y) =>
+        scale = 0.8
+        width = @padding * scale
+        height = @padding * scale
+
+        @stage.append 'text'
+            .attr 'x', @xScale(x) - width * 0.5
+            .attr 'y', @yScale(y) - height * 0.5
+            .attr 'class', 'gravity'
+            .text "cluster#{id}"
 
     svg_replace: (id, cluster) =>
         $(".stage").find "image##{id}"

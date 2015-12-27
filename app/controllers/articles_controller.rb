@@ -135,7 +135,7 @@ class ArticlesController < ApplicationController
     f.close
 
     stdout = `#{Rails.root}/app/bin/k-means++ #{trash_dir}/#{filename}.txt #{divide}`
-    result = stdout.split('-')
+    result = stdout.split('$')
     @gravities = result.first.split("\n").map{|l| l.split(',')}.reject(&:blank?)
     @clusters = result.second.split("\n").map{|l| l.split(',')}.reject(&:blank?)
   end
