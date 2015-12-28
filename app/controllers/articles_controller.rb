@@ -123,21 +123,27 @@ class ArticlesController < ApplicationController
 
   def clustering
     trash_dir = "#{Rails.root}/tmp/cluster_trash"
+    wc_dir = "#{Rails.root}/public/articles_wc"
     filename = Time.now.to_i
     divide = params[:div]
+    label_quant = params[:label_quant]
 
     f = File.open("#{trash_dir}/#{filename}.txt", 'w')
     params[:map].each do |item_ary|
       item = item_ary.second
       f.puts [item[:news_id], item[:x], item[:y]].join(',')
     end
-
     f.close
 
-    stdout = `#{Rails.root}/app/bin/k-means++ #{trash_dir}/#{filename}.txt #{divide}`
-    result = stdout.split('$')
-    @gravities = result.first.split("\n").map{|l| l.split(',')}.reject(&:blank?)
-    @clusters = result.second.split("\n").map{|l| l.split(',')}.reject(&:blank?)
+    stdout = `#{Rails.root}/app/bin/k-means++ #{trash_dir}/#{filename}.txt #{divide} 2> #{trash_dir}/c#{filename}.txt`
+    clustered = stdout.split('$')
+    stdout = `#{Rails.root}/app/bin/cluster_tf #{trash_dir}/c#{filename}.txt #{wc_dir}/ #{label_quant}`
+    label = stdout.split('$')
+    label.shift
+
+    @gravities = clustered.first.split("\n").map{|l| l.split(',')}.reject(&:blank?)
+    @clusters = clustered.second.split("\n").map{|l| l.split(',')}.reject(&:blank?)
+    @glabel = label.map{|l| l.split("\n").reject(&:blank?)}
   end
 
 private

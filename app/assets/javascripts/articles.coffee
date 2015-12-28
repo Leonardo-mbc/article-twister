@@ -262,6 +262,9 @@ class @Plotter
             .domain [0, 1]
             .range [@height - @padding, @padding]
 
+        @append_axis_label()
+
+    append_axis_label: () =>
         xAxis = d3.svg.axis()
             .scale @xScale
             .orient 'bottom'
@@ -361,6 +364,7 @@ class @Plotter
             .attr 'xlink:href', '/images/user.svg'
 
         @clustering()
+        @append_axis_label()
 
     clustering: () =>
         map = []
@@ -373,11 +377,9 @@ class @Plotter
             data:
                 map: map
                 div: 4
+                label_quant: 2
 
-            error: (data) ->
-                console.log data
-
-    plot_gravities: (id, x, y) =>
+    plot_gravities: (text, x, y) =>
         scale = 0.8
         width = @padding * scale
         height = @padding * scale
@@ -385,8 +387,15 @@ class @Plotter
         @stage.append 'text'
             .attr 'x', @xScale(x) - width * 0.5
             .attr 'y', @yScale(y) - height * 0.5
+            .attr 'original-title', '<a href="http://www.google.com"><i class="fa fa-thumbs-up"></i></a> or <a href="http://www.yahoo.com"><i class="fa fa-thumbs-down"></i></a>'
             .attr 'class', 'gravity'
-            .text "cluster#{id}"
+            .text text
+
+        $('text').tipsy
+            gravity: 's'
+            delayOut: 50
+            html: true
+            trigger: 'focus'
 
     svg_replace: (id, cluster) =>
         $(".stage").find "image##{id}"
