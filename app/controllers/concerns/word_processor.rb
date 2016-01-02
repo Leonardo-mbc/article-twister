@@ -46,4 +46,8 @@ module WordProcessor
     end
   end
 
+  def save_corpusDF
+    `#{Rails.root}/app/bin/corpus_df #{Rails.root}/public/articles_wc/ > #{Rails.root}/public/corpus_df/corpus_df.txt`
+  end
+
 end

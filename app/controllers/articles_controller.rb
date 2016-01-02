@@ -77,6 +77,8 @@ class ArticlesController < ApplicationController
       news.save
     end
 
+    save_corpusDF()
+
   end
 
   def combine
@@ -139,7 +141,6 @@ class ArticlesController < ApplicationController
     clustered = stdout.split('$')
     stdout = `#{Rails.root}/app/bin/cluster_tf #{trash_dir}/c#{filename}.txt #{wc_dir}/ #{label_quant}`
     label = stdout.split('$')
-    label.shift
 
     @gravities = clustered.first.split("\n").map{|l| l.split(',')}.reject(&:blank?)
     @clusters = clustered.second.split("\n").map{|l| l.split(',')}.reject(&:blank?)

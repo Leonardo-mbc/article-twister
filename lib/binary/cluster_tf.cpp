@@ -5,10 +5,12 @@
 #include <iostream>
 #include <sstream>
 #include <algorithm>
+#include <cmath>
 using namespace std;
 
 inline int toInt(std::string s) {int v; std::istringstream sin(s);sin>>v;return v;}
 typedef map<string, int>::const_iterator map_freq_it;
+typedef map<string, double>::const_iterator map_freq_db;
 
 vector<string> split(string s, string c) {
     vector<string> ret;
@@ -21,7 +23,7 @@ vector<string> split(string s, string c) {
     return ret;
 }
 
-bool compare(const map_freq_it& a, const map_freq_it& b) {
+bool compare(const map_freq_db& a, const map_freq_db& b) {
     return (a->second > b->second);
 }
 
@@ -30,6 +32,8 @@ public:
     string news_dir = "";
     int cluster = -1;
     map<string, int> words;
+    map<string, double> words_tfidf;
+    int total_words = 0;
 
     Frequency(int cluster, string news_dir) {
         this->cluster = cluster;
@@ -48,6 +52,7 @@ public:
                 string word = strvec.at(0);
                 int quant = toInt(strvec.at(1));
                 this->add(word, quant);
+                this->total_words += quant;
             }
         }
 
@@ -62,6 +67,37 @@ public:
             it->second += quant;
         } else {
             this->words.insert(pair<string, int>(word, quant));
+        }
+    }
+
+    void load(string filename) {
+        stringstream filepath;
+        filepath << this->news_dir << filename;
+        ifstream fin(filepath.str());
+
+        if(fin.is_open()) {
+            string str;
+            while(getline(fin, str)) {
+                vector<string> strvec = split(str, ",");
+                string word = strvec.at(0);
+                int quant = toInt(strvec.at(1));
+                this->add(word, quant);
+            }
+        }
+
+        fin.close();
+    }
+
+    void tfidf(map<string, int> corpus, int Dn) {
+        for(map_freq_it w = this->words.begin(); w != this->words.end(); ++w) {
+            map<string, int>::iterator search;
+            search = corpus.find(w->first);
+
+            int df = 0;
+            if (search != corpus.end()) df = search->second;
+
+            double tv = (w->second / (double)this->total_words) * log(Dn / (double)df);
+            this->words_tfidf.insert(pair<string, double>(w->first, tv));
         }
     }
 };
@@ -79,13 +115,17 @@ public:
 
 int main(int argc, char **argv) {
     int cluster_quant = 0;
+    int corpus_num = 0;
     string news_dir = argv[2];
     int output = toInt(argv[3]);
 
     vector<Cluster> clusters;
     vector<Frequency> frequencies;
-    ifstream fin(argv[1]);
 
+    Frequency *corpus_df = new Frequency(0, news_dir);
+    corpus_df->load("../corpus_df/corpus_df.txt");
+
+    ifstream fin(argv[1]);
     if(fin.is_open()) {
         string str;
         while(getline(fin, str)) {
@@ -114,9 +154,11 @@ int main(int argc, char **argv) {
     }
 
     for(vector<Frequency>::iterator it = frequencies.begin(); it != frequencies.end(); ++it) {
-        vector<map_freq_it> sorted;
+        it->tfidf(corpus_df->words, clusters.size());
+
+        vector<map_freq_db> sorted;
         sorted.clear();
-        for(map_freq_it mfi = it->words.begin(); mfi != it->words.end(); ++mfi)
+        for(map_freq_db mfi = it->words_tfidf.begin(); mfi != it->words_tfidf.end(); ++mfi)
             sorted.push_back(mfi);
 
         sort(sorted.begin(), sorted.end(), compare);

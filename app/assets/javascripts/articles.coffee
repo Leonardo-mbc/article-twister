@@ -377,7 +377,7 @@ class @Plotter
             data:
                 map: map
                 div: 4
-                label_quant: 2
+                label_quant: 1
 
     plot_gravities: (text, x, y) =>
         scale = 0.8
