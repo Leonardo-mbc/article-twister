@@ -1,10 +1,12 @@
 <ul class="nav nav-tabs">
-  <li class="active" data-tab='topic'><a data-toggle="tab">Topic List</a></li>
-  <li data-tab='article'><a data-toggle="tab">Article List</a></li>
-  <li data-tab='items'><a data-toggle="tab">Selected item</a></li>
+    <li class="active" data-tab='topic'><a data-toggle="tab">Topic List</a></li>
+    <li data-tab='recently'><a data-toggle="tab">Recently List</a></li>
+    <li data-tab='article'><a data-toggle="tab">Article List</a></li>
+    <li data-tab='items'><a data-toggle="tab">Selected item</a></li>
 </ul>
 
 <table class="topic-cells table table-striped table-hover"></table>
+<table class="recently-cells table table-striped table-hover"></table>
 <table class="article-cells table table-striped table-hover"></table>
 <table class="items-cells table table-striped table-hover"></table>
 
@@ -26,6 +28,7 @@
 <%= javascript_tag do %>
     $(function() {
         var picker = new Picker("<%= Settings.api.ajax_host %>");
-        picker.fetch({}, 'topic');
+        var prepend = function() { picker.fetch({ action: 'recently.php' }, 'recently') };
+        picker.fetch({ prepend: prepend }, 'topic');
     });
 <% end %>

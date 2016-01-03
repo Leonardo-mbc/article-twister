@@ -3,7 +3,8 @@ class @Picker
         @endpoint = api_url
         @select_cells = []
         @check_icon = @make_icon_check()
-        @topic_page = 1
+        @page = { topic: 1, recently: 1 }
+        @visible_tab = 'topic'
         @requests = []
 
         @tab_enable()
@@ -16,13 +17,17 @@ class @Picker
         options = {
             topic_id: null,
             news_id: null,
+            action: '',
+            dispatch: ->
+                return
         }
         if params
             (options[k] = v for k, v of params)
+            # options.prepend関数はここで実行される
 
         @requests.push $.ajax
             type: 'GET'
-            url: "#{@endpoint}/api/v1/"
+            url: "#{@endpoint}/api/v1/#{options.action}"
             dataType: 'json'
             data: options
 
@@ -37,6 +42,8 @@ class @Picker
     put: (items, target, move) =>
         tr_tags = []
         table = $(".#{target}-cells")
+
+        tr_tags.push @make_select_all()
 
         if items.topics
             $.each items.topics, (key, item) =>
@@ -68,8 +75,9 @@ class @Picker
                 tr_tag.append $("<td>").append @check_icon
                 tr_tag.append $("<td>").append item.id
                 tr_tag.append $("<td>").append item.title
-                tr_tag.append $("<td>").append item.body
-                tr_tag.append $("<td>").append item.url
+                tr_tag.append $("<td>").append item.body unless target is "recently"
+                tr_tag.append $("<td>").append item.url unless target is "recently"
+                tr_tag.append $("<td>").append item.updated_at
 
                 tr_tags.push tr_tag
 
@@ -132,28 +140,34 @@ class @Picker
 
         a_tag
 
-    paging: (num) ->
+    paging: (num) =>
         $("[data-role='page_num']").removeClass "active"
         button = $("[data-role='page_num']").get(num - 1)
         $(button).addClass "active"
 
-        @topic_page = num
-        @fetch { page: num }, 'topic'
+        @page[@visible_tab] = num
+
+        action = ''
+        action = "recently.php" if @visible_tab is 'recently'
+        @fetch { page: num, action: action }, @visible_tab
 
     erase: (target) ->
         $(".#{target}-cells").html ""
 
     tab_enable: =>
         $(".import").hide()
+        $(".recently-cells").hide()
+        $(".article-cells").hide()
         $(".items-cells").hide()
 
         $("[data-tab]").on 'click', (e) =>
             target = $(e.currentTarget).data "tab"
+            @visible_tab = target
 
             $("table").hide()
             $(".#{target}-cells").show()
 
-            if target is 'topic' or target is 'imported_news'
+            if target is 'topic' or target is 'recently' or target is 'imported_news'
                 $(".pagination").show()
             else
                 $(".pagination").hide()
@@ -169,11 +183,11 @@ class @Picker
             @paging page_num
 
         $("[data-role='page_prev']").on 'click', (e) =>
-            page_num = @topic_page - 1
+            page_num = @page[@visible_tab] - 1
             @paging page_num
 
         $("[data-role='page_next']").on 'click', (e) =>
-            page_num = @topic_page + 1
+            page_num = @page[@visible_tab] + 1
             @paging page_num
 
     importer_enable: ->
@@ -239,6 +253,36 @@ class @Picker
         icon = $(check).get(0).outerHTML
 
         icon
+
+    make_select_all: () =>
+        tr_tag = $("<tr>")
+        td_tag = $("<td>").attr 'colspan', 6
+        a_tag = $("<a>").attr 'class', 'btn btn-link'
+            .attr 'data-select', 'uncheck'
+            .append $("<i>").attr 'class', 'fa fa-square-o'
+            .append " すべて選択"
+            .on 'click', (e) =>
+                sign = $(e.currentTarget).data 'select'
+                if sign is 'check'
+                    $("tr:visible[data-id]").each (k, v) =>
+                        data_id = $(v).data('id')
+                        @select v, data_id
+
+                    $(e.currentTarget).data 'select', 'uncheck'
+                    $(e.currentTarget).html $("<i>").attr 'class', 'fa fa-square-o'
+                        .append " すべて選択"
+                if sign is 'uncheck'
+                    $("tr:visible[data-id]").each (k, v) =>
+                        data_id = $(v).data('id')
+                        @select v, data_id
+
+                    $(e.currentTarget).data 'select', 'check'
+                    $(e.currentTarget).html $("<i>").attr 'class', 'fa fa-check-square-o'
+                        .append " すべて選択解除"
+
+        $(tr_tag).append $(td_tag).append a_tag
+
+        tr_tag
 
 class @Plotter
     constructor: (width, height, picker) ->
