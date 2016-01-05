@@ -11,8 +11,8 @@
         <div class="eyecatch" onClick="call_iframe_modal('<%= news.url %>');"></div>
 
         <div class="well" style="margin: 1em; padding: 0px; cursor: pointer;">
-            <div class="panel-body" onClick="call_iframe_modal('<%= news.url %>');">
-                <%= "news body" %>
+            <div class="panel-body" onClick="window.open('<%= news.url %>');">
+                <%= truncate fetch_body(news.news_id), :length => 140 %>
             </div>
         </div>
     </div>

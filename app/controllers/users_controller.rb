@@ -18,4 +18,18 @@ class UsersController < ApplicationController
 
     save_article prof, current_user.id, 'user_prof' if prof.present?
   end
+
+  def instant_profile_update
+    public_dir = "#{Rails.root}/public"
+    prof = Hash.new(0)
+
+    f = File.open("#{public_dir}/user_profiles/#{current_user.id}.txt", 'r').each_line do |line|
+      items = line.split(',')
+      prof[items.first] = items.second.to_i
+    end
+    f.close
+
+    prof[params[:word]] += params[:score].to_i * 10
+    save_article prof, current_user.id, 'user_prof' if prof.present?
+  end
 end

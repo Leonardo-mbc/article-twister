@@ -19,7 +19,7 @@ class ArticlesController < ApplicationController
   end
 
   def imported_list
-    @news = News.all().order("created_at DESC").page(params[:page])
+    @news = News.all().order("created_at DESC")
   end
 
   def x_similar

@@ -431,7 +431,7 @@ class @Plotter
         @stage.append 'text'
             .attr 'x', @xScale(x) - width * 0.5
             .attr 'y', @yScale(y) - height * 0.5
-            .attr 'original-title', '<a href="http://www.google.com"><i class="fa fa-thumbs-up"></i></a> or <a href="http://www.yahoo.com"><i class="fa fa-thumbs-down"></i></a>'
+            .attr 'original-title', @make_thumbs(text)
             .attr 'class', 'gravity'
             .text text
 
@@ -445,6 +445,27 @@ class @Plotter
         $(".stage").find "image##{id}"
             .attr 'href', "/images/document_clusters/#{cluster}.svg"
             .attr 'cluster', cluster
+
+    cluster_rating: (word, score) =>
+        $.ajax
+            url: '/users/instant_profile_update'
+            type: 'get'
+            data:
+                word: word
+                score: score
+            dataType: 'json'
+
+    make_thumbs: (word) =>
+        thumbs_up = $("<a>").attr 'href', "JavaScript: plotter.cluster_rating(\"#{word}\", 1)"
+            .append $("<i>").attr 'class', 'fa fa-thumbs-up'
+            .get(0).outerHTML
+        thumbs_down = $("<a>").attr 'href', "JavaScript: plotter.cluster_rating(\"#{word}\", -1)"
+            .append $("<i>").attr 'class', 'fa fa-thumbs-down'
+            .get(0).outerHTML
+
+        rate_link = "#{thumbs_up} or #{thumbs_down}"
+
+        rate_link
 
 class @Rating
     constructor: (user_id) ->

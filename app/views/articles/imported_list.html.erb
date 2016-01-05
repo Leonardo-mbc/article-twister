@@ -9,7 +9,7 @@
 
 <table class="imported_news-cells table table-striped table-hover">
     <tr>
-        <th colspan="2"><%= page_entries_info @news %></th>
+        <th colspan="2"><%= @news.count %> news</th>
         <th>topic_id</th>
     </tr>
     <% @news.each do |item| %>
@@ -32,8 +32,6 @@
         </span>
     </div>
 </div>
-
-<%= paginate @news %>
 
 <%= javascript_tag do %>
     var picker; $(function() { picker = new Picker("<%= Settings.api.ajax_host %>"); });

@@ -27,6 +27,7 @@ Rails.application.routes.draw do
   resources :users do
     collection do
       get :profile_update
+      get :instant_profile_update
     end
   end
 
