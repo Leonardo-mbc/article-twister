@@ -23,7 +23,7 @@ class @Picker
         }
         if params
             (options[k] = v for k, v of params)
-            # options.prepend関数はここで実行される
+            # options.dispatch関数はここで実行される
 
         @requests.push $.ajax
             type: 'GET'
@@ -290,6 +290,9 @@ class @Plotter
         @height = height
         @picker = picker
 
+        @axis_label = { X: null, Y: null }
+        @div_num = 4
+
         @stage = d3.select ".stage"
             .append 'svg'
         @dataset = []
@@ -300,15 +303,29 @@ class @Plotter
 
         @padding = 30
         @xScale = d3.scale.linear()
-            .domain [0, 1]
+            .domain [-1, 1]
             .range [@padding, @width - @padding]
         @yScale = d3.scale.linear()
-            .domain [0, 1]
+            .domain [-1, 1]
             .range [@height - @padding, @padding]
 
         @append_axis_label()
 
+    cluster_slider_trigger: () =>
+        $("[data-role='divider']").on
+            'input': (e) =>
+                $("#divider").html $(e.currentTarget).val()
+
+            'change': (e) =>
+                @div_num = $(e.currentTarget).val()
+                @clustering()
+
+        if @axis_label.X is @axis_label.Y and @axis_label.X is null
+            $("[data-role='divider']").get(0).disabled = true;
+
     append_axis_label: () =>
+        d3.selectAll("g").remove()
+
         xAxis = d3.svg.axis()
             .scale @xScale
             .orient 'bottom'
@@ -324,12 +341,19 @@ class @Plotter
             .attr "transform", "translate(" + @padding + ", 0)"
             .call yAxis
 
+    change_divide: (div_num) =>
+        @div_num = div_num
+
     change_axis: (axis, name) ->
+        @axis_label[axis] = name
+        $("[data-role='divider']").get(0).disabled = false;
+
         $("[data-title='#{axis}']").html name
             .parent().removeClass('open');
         $("[data-label='#{axis}']").html name
 
     clear_axis: (axis) =>
+        @axis_label[axis] = null
         @dataset.forEach (data, news_id) =>
             if axis is 'X'
                 @dataset[news_id].x = 0.5
@@ -339,6 +363,9 @@ class @Plotter
                 @user_data.y = 0.5
 
             $("[data-title='#{axis}']").html "#{axis}軸へのマッピング"
+
+        if @axis_label.X is @axis_label.Y and @axis_label.X is null
+            $("[data-role='divider']").get(0).disabled = true;
 
         @plot()
 
@@ -376,6 +403,8 @@ class @Plotter
         @stage.selectAll('image').remove()
         @stage.selectAll('text').remove()
 
+        @scale_update()
+
         @dataset.forEach (data, news_id) =>
             @stage.append 'image'
                 .attr 'id', news_id
@@ -407,10 +436,12 @@ class @Plotter
             .attr 'height', height
             .attr 'xlink:href', '/images/user.svg'
 
-        @clustering()
+        @clustering() unless @axis_label.X is @axis_label.Y and @axis_label.X is null
         @append_axis_label()
 
     clustering: () =>
+        d3.selectAll("text").remove()
+
         map = []
         @dataset.forEach (data, news_id) =>
             map.push { news_id: news_id, x: data.x, y: data.y }
@@ -420,8 +451,10 @@ class @Plotter
             type: 'post'
             data:
                 map: map
-                div: 4
+                div: @div_num
                 label_quant: 1
+
+        @append_axis_label()
 
     plot_gravities: (text, x, y) =>
         scale = 0.8
@@ -466,6 +499,25 @@ class @Plotter
         rate_link = "#{thumbs_up} or #{thumbs_down}"
 
         rate_link
+
+    scale_update:() =>
+        ary_x = []
+        ary_y = []
+        @dataset.map (d) ->
+            ary_x.push d.x
+            ary_y.push d.y
+
+        min_x = Math.min.apply(null, ary_x)
+        min_y = Math.min.apply(null, ary_y)
+        max_x = Math.max.apply(null, ary_x)
+        max_y = Math.max.apply(null, ary_y)
+
+        @xScale = d3.scale.linear()
+            .domain [min_x, max_x]
+            .range [@padding, @width - @padding]
+        @yScale = d3.scale.linear()
+            .domain [min_y, max_y]
+            .range [@height - @padding, @padding]
 
 class @Rating
     constructor: (user_id) ->

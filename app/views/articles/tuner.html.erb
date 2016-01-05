@@ -16,10 +16,16 @@
     </div>
 <% end %>
 
+<div class="btn-group more-padding-left">
+    <span class="label label-warning">クラスタ数</span> <span id="divider" class="badge">4</span>
+    <%= content_tag :input, '', id: 'rangeInput', type: 'range', class: 'custom', step: '1', min: '2', max: '10', value: '4', data: { role: 'divider'} %>
+</div>
+
 <div class="stage"></div>
 
 <div class="form-group">
     <span class="label label-primary" data-label="X">X軸</span>
+    <an class="label label-primary" data-label="X">X軸</span>
     <span class="label label-success" data-label="Y">Y軸</span>
 </div>
 
@@ -30,5 +36,6 @@
     $(function() {
         var picker = new Picker("<%= Settings.api.ajax_host %>");
         plotter = new Plotter(500, 500, picker);
+        plotter.cluster_slider_trigger();
     });
 <% end %>

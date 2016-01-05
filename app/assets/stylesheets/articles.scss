@@ -45,3 +45,45 @@ text.gravity {
 td {
     vertical-align: middle !important;
 }
+
+.x-small {
+    font-size: x-small;
+}
+
+.more-padding-left {
+    padding-left: 10px;
+}
+
+input[type="range"].custom {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: #ccc;
+    border:0;
+    height:3px;
+    margin:10px 0 20px;
+}
+input[type="range"].custom::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: #bbb;
+    text-align:center;
+    width: 30px;
+    height: 20px;
+    border:2px #fff solid;
+    border-radius:3px;
+    cursor:pointer;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    box-sizing:border-box;
+}
+input[type="range"].custom::-webkit-slider-thumb:hover {
+    background-color: #aaa;
+}
+input[type="range"].custom:active::-webkit-slider-thumb {
+    background-color: #ff851b;
+}
+input[type="range"].custom:focus {
+    outline:none;
+}
