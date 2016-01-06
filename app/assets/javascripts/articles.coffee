@@ -301,7 +301,7 @@ class @Plotter
         @stage.attr 'width', @width
             .attr 'height', @height
 
-        @padding = 30
+        @padding = 50
         @xScale = d3.scale.linear()
             .domain [-1, 1]
             .range [@padding, @width - @padding]
@@ -397,7 +397,7 @@ class @Plotter
     plot: () =>
         self = this
 
-        scale = 0.8
+        scale = 0.5
         width = @padding * scale
         height = @padding * scale
         @stage.selectAll('image').remove()
@@ -511,10 +511,10 @@ class @Plotter
             ary_x.push d.x
             ary_y.push d.y
 
-        min_x = Math.min.apply(null, ary_x)
-        min_y = Math.min.apply(null, ary_y)
-        max_x = Math.max.apply(null, ary_x)
-        max_y = Math.max.apply(null, ary_y)
+        min_x = Math.min.apply(null, ary_x) - 0.05
+        min_y = Math.min.apply(null, ary_y) - 0.05
+        max_x = Math.max.apply(null, ary_x) + 0.05
+        max_y = Math.max.apply(null, ary_y) + 0.05
 
         @xScale = d3.scale.linear()
             .domain [min_x, max_x]

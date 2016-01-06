@@ -35,6 +35,7 @@ gem 'omniauth-facebook'
 gem 'omniauth-twitter'
 gem 'settingslogic'
 gem 'kaminari'
+gem 'random_bell'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
