@@ -3,11 +3,11 @@
 worker_processes 2
 
 # ソケット
-listen  '/home/leonardo/services/at/tmp/unicorn.sock'
-pid     '/home/leonardo/services/at/tmp/unicorn.pid'
+listen  File.expand_path('tmp/unicorn.sock', ENV['RAILS_ROOT'])
+pid     File.expand_path('tmp/unicorn.pid', ENV['RAILS_ROOT'])
 
 # ログ
-log = '/home/leonardo/services/at/log/unicorn.log'
+log = File.expand_path('log/unicorn.log', ENV['RAILS_ROOT'])
 stderr_path File.expand_path('log/unicorn.log', ENV['RAILS_ROOT'])
 stdout_path File.expand_path('log/unicorn.log', ENV['RAILS_ROOT'])
 

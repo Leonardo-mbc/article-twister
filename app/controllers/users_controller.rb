@@ -29,7 +29,7 @@ class UsersController < ApplicationController
     end
     f.close
 
-    prof[params[:word]] += params[:score].to_i * 1000
+    prof[params[:word]] += params[:score].to_i * 50
     save_article prof, current_user.id, 'user_prof' if prof.present?
   end
 end

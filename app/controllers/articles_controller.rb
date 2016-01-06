@@ -152,6 +152,8 @@ private
     public_dir = "#{Rails.root}/public"
     sim_box = Hash.new
 
+    checked_articles = current_user.user_discriminations.map{|c| c.news.news_id }
+
     if prof_id == '0'
       base_prof = "#{public_dir}/user_profiles/#{current_user.id}.txt"
     else
@@ -159,12 +161,14 @@ private
     end
 
     Dir::glob("#{public_dir}/articles_wc/*.txt").each do |data|
-      puts "#{Rails.root}/app/bin/similar #{base_prof} #{data}"
-      Open3.popen3("#{Rails.root}/app/bin/similar #{base_prof} #{data}") do |stdin, stdout, stderr|
-        stdin.close
-        sim = stdout.read.to_f
-        id = data.scan(/([0-9]+?)\.txt/).flatten.first
-        sim_box[id] = sim
+      doc_id = data.scan(/([0-9]+?)\.txt/).flatten.first.to_i
+      unless checked_articles.include?(doc_id)
+        Open3.popen3("#{Rails.root}/app/bin/similar #{base_prof} #{data}") do |stdin, stdout, stderr|
+          stdin.close
+          sim = stdout.read.to_f
+          id = data.scan(/([0-9]+?)\.txt/).flatten.first
+          sim_box[id] = sim
+        end
       end
     end
 
