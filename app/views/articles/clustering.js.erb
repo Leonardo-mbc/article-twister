@@ -3,5 +3,8 @@
 <% end %>
 
 <% @gravities.each do |grav| %>
-    plotter.plot_gravities("<%= @glabel[grav[0].to_i].join(',') %>", <%= grav[1] %>, <%= grav[2] %>);
+    <% quant = @glabel[grav[0].to_i].length %>
+    <% @glabel[grav[0].to_i].each_with_index do |tag, idx| %>
+        plotter.plot_gravities("<%= tag %>", <%= grav[1] %> + <%= (idx - Random.rand(-2..2)) * 0.03 %>, <%= grav[2] %> + <%= (idx - 2) * 0.03 %>);
+    <% end %>
 <% end %>

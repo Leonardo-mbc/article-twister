@@ -452,7 +452,7 @@ class @Plotter
             data:
                 map: map
                 div: @div_num
-                label_quant: 1
+                label_quant: 5
 
         @append_axis_label()
 
@@ -487,6 +487,10 @@ class @Plotter
                 word: word
                 score: score
             dataType: 'json'
+
+            success: (data) =>
+                #if @axis_label.X is "自分のプロファイル"
+                #if @axis_label.Y is "自分のプロファイル"
 
     make_thumbs: (word) =>
         thumbs_up = $("<a>").attr 'href', "JavaScript: plotter.cluster_rating(\"#{word}\", 1)"
