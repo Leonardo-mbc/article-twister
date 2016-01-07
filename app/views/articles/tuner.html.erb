@@ -1,40 +1,49 @@
-<% @selectors.each do |selector| %>
-    <div class="btn-group">
-        <a class="btn btn-<%= selector[:label_type] %> btn-xs" onClick="plotter.clear_axis('<%= selector[:axis] %>')" data-title="<%= selector[:axis] %>"><%= selector[:axis] %>軸へのマッピング</a>
-        <a aria-expanded="false" class="btn btn-<%= selector[:label_type] %> btn-xs dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
-        <ul class="dropdown-menu">
-            <% path = x_similar_article_path(0) if selector[:axis] == 'X' %>
-            <% path = y_similar_article_path(0) if selector[:axis] == 'Y' %>
-            <li onClick="plotter.change_axis('<%= selector[:axis] %>', '自分のプロファイル')"><%= link_to '自分のプロファイル', path, remote: true %></li>
-            <li class="divider"></li>
-            <% @profiles.each do |prof| %>
-                <% path = x_similar_article_path(prof.id) if selector[:axis] == 'X' %>
-                <% path = y_similar_article_path(prof.id) if selector[:axis] == 'Y' %>
-                <li onClick="plotter.change_axis('<%= selector[:axis] %>', '<%= prof.name %>')"><%= link_to prof.name, path, remote: true %></li>
-            <% end %>
-        </ul>
+<div class="row">
+    <div class="col-md-6" data-role="tuner">
+        <% @selectors.each do |selector| %>
+            <div class="btn-group">
+                <a class="btn btn-<%= selector[:label_type] %> btn-xs" onClick="plotter.clear_axis('<%= selector[:axis] %>')" data-title="<%= selector[:axis] %>"><%= selector[:axis] %>軸へのマッピング</a>
+                <a aria-expanded="false" class="btn btn-<%= selector[:label_type] %> btn-xs dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <% path = x_similar_article_path(0) if selector[:axis] == 'X' %>
+                    <% path = y_similar_article_path(0) if selector[:axis] == 'Y' %>
+                    <li onClick="plotter.change_axis('<%= selector[:axis] %>', '自分のプロファイル')"><%= link_to '自分のプロファイル', path, remote: true %></li>
+                    <li class="divider"></li>
+                    <% @profiles.each do |prof| %>
+                        <% path = x_similar_article_path(prof.id) if selector[:axis] == 'X' %>
+                        <% path = y_similar_article_path(prof.id) if selector[:axis] == 'Y' %>
+                        <li onClick="plotter.change_axis('<%= selector[:axis] %>', '<%= prof.name %>')"><%= link_to prof.name, path, remote: true %></li>
+                    <% end %>
+                </ul>
+            </div>
+        <% end %>
+
+        <div class="btn-group more-padding-left">
+            <span class="label label-warning">クラスタ数</span> <span id="divider" class="badge">4</span>
+            <%= content_tag :input, '', id: 'rangeInput', type: 'range', class: 'custom', step: '1', min: '2', max: '10', value: '4', data: { role: 'divider'} %>
+        </div>
+
+        <div class="stage"></div>
+
+        <div class="form-group">
+            <span class="label label-primary" data-label="X">X軸</span>
+            <span class="label label-success" data-label="Y">Y軸</span>
+        </div>
+
+        <blockquote class="details"></blockquote>
     </div>
-<% end %>
 
-<div class="btn-group more-padding-left">
-    <span class="label label-warning">クラスタ数</span> <span id="divider" class="badge">4</span>
-    <%= content_tag :input, '', id: 'rangeInput', type: 'range', class: 'custom', step: '1', min: '2', max: '10', value: '4', data: { role: 'divider'} %>
+    <div class="col-md-6" data-role="recommend"></div>
 </div>
-
-<div class="stage"></div>
-
-<div class="form-group">
-    <span class="label label-primary" data-label="X">X軸</span>
-    <span class="label label-success" data-label="Y">Y軸</span>
-</div>
-
-<blockquote class="details"></blockquote>
 
 <%= javascript_tag do %>
-    var plotter;
+    var plotter, rating;
     $(function() {
         var picker = new Picker("<%= Settings.api.ajax_host %>");
         plotter = new Plotter(500, 500, picker);
         plotter.cluster_slider_trigger();
+        plotter.tuner_scroll_trigger();
+
+        rating = new Rating("<%= current_user.id %>");
     });
 <% end %>

@@ -3,7 +3,6 @@ class ArticlesController < ApplicationController
 
   def index
     @news = News.all().order("created_at DESC").page(params[:page]).per(10)
-    @sign_patterns = {-1 => "panel-danger", 0 => "panel-info", 1 => "panel-success"}
   end
 
   def picker
@@ -126,7 +125,7 @@ class ArticlesController < ApplicationController
   def clustering
     trash_dir = "#{Rails.root}/tmp/cluster_trash"
     wc_dir = "#{Rails.root}/public/articles_wc"
-    filename = Time.now.to_i
+    filename = params[:filename]
     divide = params[:div]
     label_quant = params[:label_quant]
 
@@ -145,6 +144,32 @@ class ArticlesController < ApplicationController
     @gravities = clustered.first.split("\n").map{|l| l.split(',')}.reject(&:blank?)
     @clusters = clustered.second.split("\n").map{|l| l.split(',')}.reject(&:blank?)
     @glabel = label.map{|l| l.split("\n").reject(&:blank?)}
+  end
+
+  def recommend
+    trash_dir = "#{Rails.root}/tmp/cluster_trash"
+    user_data = { x: params[:user_x].to_f, y: params[:user_y].to_f }
+    recommend_list = {}
+    quant = params[:quant].to_i
+
+    file = File.open("#{trash_dir}/#{params[:filename]}.txt", 'r').read
+    file.each_line do |line|
+      d = line.split(',')
+      x = (user_data[:x] - d[1].to_f) ** 2
+      y = (user_data[:y] - d[2].to_f) ** 2
+      recommend_list[d[0]] =  Math.sqrt(x + y)
+    end
+
+    ranking = recommend_list.sort {|(k1, v1), (k2, v2)| v1 <=> v2 }
+
+
+    recommend_list = []
+    ranking[0..(quant - 1)].each do |doc|
+      recommend_list.push doc.first.to_i
+    end
+
+    articles = News.where(news_id: recommend_list)
+    render :partial => "article", :locals => { articles: articles }
   end
 
 private

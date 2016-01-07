@@ -16,6 +16,7 @@ Rails.application.routes.draw do
       get :combine
       get :push_rate
       post :clustering
+      post :recommend
     end
 
     member do

@@ -323,6 +323,12 @@ class @Plotter
         if @axis_label.X is @axis_label.Y and @axis_label.X is null
             $("[data-role='divider']").get(0).disabled = true;
 
+    tuner_scroll_trigger: () =>
+        $(window).scroll ->
+            ofs = $(window).scrollTop()
+            $("[data-role='tuner']").css
+                "margin-top": "#{ofs}px"
+
     append_axis_label: () =>
         d3.selectAll("g").remove()
 
@@ -441,6 +447,7 @@ class @Plotter
 
     clustering: () =>
         d3.selectAll("text").remove()
+        filename = new Date().getTime()
 
         map = []
         @dataset.forEach (data, news_id) =>
@@ -453,6 +460,10 @@ class @Plotter
                 map: map
                 div: @div_num
                 label_quant: 5
+                filename: filename
+
+            success: =>
+                @recommend filename
 
         @append_axis_label()
 
@@ -522,6 +533,21 @@ class @Plotter
         @yScale = d3.scale.linear()
             .domain [min_y, max_y]
             .range [@height - @padding, @padding]
+
+    recommend:(filename) =>
+        $.ajax
+            url: '/articles/recommend'
+            type: 'post'
+            data:
+                filename: filename
+                user_x: @user_data.x
+                user_y: @user_data.y
+                quant: 10
+
+            success: (data) ->
+                $("[data-role='recommend']").html data
+                rating.rating_enable()
+
 
 class @Rating
     constructor: (user_id) ->

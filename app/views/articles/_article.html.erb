@@ -1,0 +1,20 @@
+<% for news in articles %>
+    <% sign_patterns = { -1 => "panel-danger", 0 => "panel-info", 1 => "panel-success" } %>
+    <% sign = news.sign(current_user.id) %>
+    <div class="panel <%= sign_patterns[sign.to_i] %>" data-news="<%= news.news_id %>" >
+        <div class="panel-heading" style="cursor: move">
+            <h3 class="panel-title">
+                <% if sign.present? %><span aria-hidden="true" class="glyphicon glyphicon-ok"></span><% end %>
+                <%= news.title %>
+            </h3>
+        </div>
+
+        <div class="eyecatch" onClick="call_iframe_modal('<%= news.url %>');"></div>
+
+        <div class="well" style="margin: 1em; padding: 0px; cursor: pointer;">
+            <div class="panel-body" onClick="window.open('<%= news.url %>');">
+                <%= truncate fetch_body(news.news_id), :length => 140 %>
+            </div>
+        </div>
+    </div>
+<% end %>
