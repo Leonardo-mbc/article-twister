@@ -351,6 +351,7 @@ class @Plotter
         @div_num = div_num
 
     change_axis: (axis, name) ->
+        $(".loading").fadeIn 100
         @axis_label[axis] = name
         $("[data-role='divider']").get(0).disabled = false;
 
@@ -463,6 +464,7 @@ class @Plotter
                 filename: filename
 
             success: =>
+                $(".loading").fadeOut 100
                 @recommend filename
 
         @append_axis_label()
