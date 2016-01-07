@@ -16,6 +16,10 @@
 //= require jquery.lettering
 //= require_tree .
 
+$(window).scroll(function() {
+    $(".loading").css({ "margin-top": $(window).scrollTop() });
+});
+
 $(".loading h1").textillate({
     loop: true,
     minDisplayTime: 1000,

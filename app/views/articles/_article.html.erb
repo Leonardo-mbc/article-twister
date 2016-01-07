@@ -1,5 +1,6 @@
 <% for news in articles %>
     <% sign_patterns = { -1 => "panel-danger", 0 => "panel-info", 1 => "panel-success" } %>
+    <% news = News.where(news_id: news).first if news.class == Fixnum %>
     <% sign = news.sign(current_user.id) %>
     <div class="panel <%= sign_patterns[sign.to_i] %>" data-news="<%= news.news_id %>" >
         <div class="panel-heading" style="cursor: move">

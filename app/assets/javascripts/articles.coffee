@@ -537,6 +537,7 @@ class @Plotter
             .range [@height - @padding, @padding]
 
     recommend:(filename) =>
+        quant = 10
         $.ajax
             url: '/articles/recommend'
             type: 'post'
@@ -544,10 +545,15 @@ class @Plotter
                 filename: filename
                 user_x: @user_data.x
                 user_y: @user_data.y
-                quant: 10
+                quant: quant
 
             success: (data) ->
-                $("[data-role='recommend']").html data
+                $("[data-role='recommend']").html ""
+
+                label = $("<div>").attr "class", "alert alert-dismissible alert-info"
+                    .append $("<strong>").html "あなたへのおすすめ　上位 #{quant} 件"
+                $("[data-role='recommend']").html label
+                    .append data
                 rating.rating_enable()
 
 
@@ -600,16 +606,9 @@ class @Rating
             dataType: 'json'
 
             success: (data) ->
+                delete plotter.dataset[id]
                 title = $("[data-news='#{id}']").find 'h3'
                 re = new RegExp "glyphicon-ok", "i"
 
                 if !title.html().match(re)
                     $(title).prepend '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span> '
-
-                $(".progress-bar").animate
-                    width: 100 * data.checked / 50 +"%"
-                ,
-                    duration: 300
-
-                if 50 <= data.checked
-                    make_profile()

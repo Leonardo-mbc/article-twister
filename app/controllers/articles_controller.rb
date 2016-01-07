@@ -149,6 +149,8 @@ class ArticlesController < ApplicationController
   def recommend
     trash_dir = "#{Rails.root}/tmp/cluster_trash"
     user_data = { x: params[:user_x].to_f, y: params[:user_y].to_f }
+    user_data[:x] = 0.0 if user_data[:x] == 0.5
+    user_data[:y] = 0.0 if user_data[:y] == 0.5
     recommend_list = {}
     quant = params[:quant].to_i
 
@@ -162,14 +164,12 @@ class ArticlesController < ApplicationController
 
     ranking = recommend_list.sort {|(k1, v1), (k2, v2)| v1 <=> v2 }
 
-
     recommend_list = []
     ranking[0..(quant - 1)].each do |doc|
       recommend_list.push doc.first.to_i
     end
 
-    articles = News.where(news_id: recommend_list)
-    render :partial => "article", :locals => { articles: articles }
+    render :partial => "article", :locals => { articles: recommend_list }
   end
 
 private
