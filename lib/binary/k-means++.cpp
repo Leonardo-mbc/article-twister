@@ -171,8 +171,11 @@ int main(int argc,char *argv[]) {
 
     }
 
-    for(vector<Cluster>::iterator it = cluster.begin(); it != cluster.end(); ++it)
+    for(vector<Cluster>::iterator it = cluster.begin(); it != cluster.end(); ++it) {
+        if(isnan(it->x)) it->x = 0.0;
+        if(isnan(it->y)) it->y = 0.0;
         cout << it->cluster << "," << it->x << "," << it->y << endl;
+    }
 
     cout << '$' << endl;
 
