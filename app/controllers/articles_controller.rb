@@ -133,6 +133,7 @@ class ArticlesController < ApplicationController
     divide = params[:div]
     label_quant = params[:label_quant]
 
+    FileUtils.mkdir_p(trash_dir) unless Dir.exist?(trash_dir)
     f = File.open("#{trash_dir}/#{filename}.txt", 'w')
     params[:map].each do |item_ary|
       item = item_ary.second
