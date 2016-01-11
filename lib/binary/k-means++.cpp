@@ -55,14 +55,19 @@ public:
 int roulette(vector<Prob> *prob, vector<Point> *vec) {
     uniform_real_distribution<> rt(0.0, (prob->end() - 1)->accum);
     float p = rt(mt);
-
     int n = 0;
-    while(prob->at(n).accum <= p) n++;
 
-    if(vec->at(n).used) {
-        n = roulette(prob, vec);
+    if(p != 0.0) {
+        while(prob->at(n).accum <= p) n++;
+
+        if(vec->at(n).used) {
+            n = roulette(prob, vec);
+        } else {
+            vec->at(n).used = true;
+        }
     } else {
-        vec->at(n).used = true;
+        uniform_int_distribution<> rti(0, prob->size() - 1);
+        n = rti(mt);
     }
 
     return n;
@@ -110,7 +115,7 @@ int main(int argc,char *argv[]) {
     for(int c = 0; c < divide; c++) {
         vector<Prob> prob;
         float acm = 0.0;
-
+        
         Cluster *cls = new Cluster(c, vec.at(selected).x, vec.at(selected).y);
         cluster.push_back(*cls);
 
@@ -127,7 +132,7 @@ int main(int argc,char *argv[]) {
 
         selected = roulette(&prob, &vec);
     }
-
+    
     for(int c = 0; c < divide; c++) {
         Point *g = new Point(c, 0, 0);
         sum.push_back(*g);
