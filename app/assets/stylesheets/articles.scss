@@ -91,3 +91,24 @@ input[type="range"].custom:focus {
 .recommend {
     margin-top: 10px;
 }
+
+.time_separater {
+    margin-top: -15px;
+    margin-left: -15%;
+
+    hr {
+        margin-top: 0px;
+    }
+
+    &:hover {
+        color: orange;
+        cursor: pointer;
+
+        &:before {
+            content: "\002714\ ";
+        }
+    }
+}
+.time_notice {
+    font-size: large;
+}

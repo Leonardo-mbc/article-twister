@@ -11,6 +11,7 @@ Rails.application.routes.draw do
       get :picker
       get :imported_list
       get :tuner
+      get :checked_list
 
       get :import
       get :combine

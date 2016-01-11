@@ -1,8 +1,17 @@
 <% for news in articles %>
-    <% sign_patterns = { -1 => "panel-danger", 0 => "panel-info", 1 => "panel-success" } %>
-    <% news = News.where(news_id: news).first if news.class == Fixnum %>
-    <% sign = news.sign(current_user.id) %>
-    <div class="panel <%= sign_patterns[sign.to_i] %>" data-news="<%= news.news_id %>" >
+    <%
+        if news.class == Hash
+            # articlesをHashの配列で渡すと、checked_list形式で出力
+            checked_at = news[:checked_at]
+            news = news[:news]
+        elsif news.class == Fixnum
+            # articlesをFixnumの配列で渡すと、ActiveRecordに変換される
+            news = News.where(news_id: news).first
+        end
+
+        sign = news.sign(current_user.id)
+    %>
+    <div class="panel <%=header_sign sign %>" data-news="<%= news.news_id %>" data-sign="<%= sign %>">
         <div class="panel-heading" style="cursor: move">
             <h3 class="panel-title">
                 <% if sign.present? %><span aria-hidden="true" class="glyphicon glyphicon-ok"></span><% end %>
@@ -18,4 +27,10 @@
             </div>
         </div>
     </div>
+    <% if checked_at.present? %>
+        <div class="time_separater" data-time="<%= checked_at %>">
+            <%=raw time_notice checked_at %>
+            <hr/>
+        </div>
+    <% end %>
 <% end %>

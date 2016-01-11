@@ -21,6 +21,10 @@ class ArticlesController < ApplicationController
     @news = News.all().order("created_at DESC")
   end
 
+  def checked_list
+    @news = current_user.user_discriminations.order("created_at DESC").map{|c| { news: c.news, checked_at: c.created_at.in_time_zone('Tokyo') } }
+  end
+
   def x_similar
     prof_id = params[:id]
     @sim_box = similar prof_id

@@ -1,0 +1,271 @@
+class @Plotter
+    constructor: (width, height, picker) ->
+        @width = width
+        @height = height
+        @picker = picker
+
+        @axis_label = { X: null, Y: null }
+        @div_num = 4
+
+        @stage = d3.select ".stage"
+            .append 'svg'
+        @dataset = []
+        @user_data = []
+
+        @stage.attr 'width', @width
+            .attr 'height', @height
+
+        @padding = 50
+        @xScale = d3.scale.linear()
+            .domain [-1, 1]
+            .range [@padding, @width - @padding]
+        @yScale = d3.scale.linear()
+            .domain [-1, 1]
+            .range [@height - @padding, @padding]
+
+        @append_axis_label()
+
+    cluster_slider_trigger: () =>
+        $("[data-role='divider']").on
+            'input': (e) =>
+                $("#divider").html $(e.currentTarget).val()
+
+            'change': (e) =>
+                @div_num = $(e.currentTarget).val()
+                @clustering()
+
+        if @axis_label.X is @axis_label.Y and @axis_label.X is null
+            $("[data-role='divider']").get(0).disabled = true;
+
+    tuner_scroll_trigger: () =>
+        $(window).scroll ->
+            ofs = $(window).scrollTop()
+            $("[data-role='tuner']").css
+                "margin-top": "#{ofs}px"
+
+    append_axis_label: () =>
+        d3.selectAll("g").remove()
+
+        xAxis = d3.svg.axis()
+            .scale @xScale
+            .orient 'bottom'
+        yAxis = d3.svg.axis()
+            .scale @yScale
+            .orient 'left'
+        @stage.append 'g'
+            .attr 'class', 'axis_x'
+            .attr "transform", "translate(0, " + (@height - @padding) + ")"
+            .call xAxis
+        @stage.append 'g'
+            .attr 'class', 'axis_y'
+            .attr "transform", "translate(" + @padding + ", 0)"
+            .call yAxis
+
+    change_divide: (div_num) =>
+        @div_num = div_num
+
+    change_axis: (axis, name) ->
+        $(".loading").fadeIn 100
+        @axis_label[axis] = name
+        $("[data-role='divider']").get(0).disabled = false;
+
+        $("[data-title='#{axis}']").html name
+            .parent().removeClass('open');
+        $("[data-label='#{axis}']").html name
+
+    clear_axis: (axis) =>
+        @axis_label[axis] = null
+        @dataset.forEach (data, news_id) =>
+            if axis is 'X'
+                @dataset[news_id].x = 0.5
+                @user_data.x = 0.5
+            if axis is 'Y'
+                @dataset[news_id].y = 0.5
+                @user_data.y = 0.5
+
+            $("[data-title='#{axis}']").html "#{axis}軸へのマッピング"
+
+        if @axis_label.X is @axis_label.Y and @axis_label.X is null
+            $("[data-role='divider']").get(0).disabled = true;
+
+        @plot()
+
+    mount: (axis, id, value) =>
+        switch axis
+            when 'x'
+                if id is 'user'
+                    if @user_data
+                        @user_data.x = value
+                        @user_data.y = 0.5 unless @user_data.y
+                else
+                    if @dataset[id]
+                        @dataset[id].x = value
+                    else
+                        @dataset[id] = { x: value, y: 0.5 }
+            when 'y'
+                if id is 'user'
+                    if @user_data
+                        @user_data.x = 0.5 unless @user_data.x
+                        @user_data.y = value
+                    else
+                        @user_data = { x: 0.5, y: value }
+                else
+                    if @dataset[id]
+                        @dataset[id].y = value
+                    else
+                        @dataset[id] = { x: 0.5, y: value }
+
+    plot: () =>
+        self = this
+
+        scale = 0.5
+        width = @padding * scale
+        height = @padding * scale
+        @stage.selectAll('image').remove()
+        @stage.selectAll('text').remove()
+
+        @scale_update()
+
+        @dataset.forEach (data, news_id) =>
+            @stage.append 'image'
+                .attr 'id', news_id
+                .attr 'x', @xScale(data.x) - width * 0.5
+                .attr 'y', @yScale(data.y) - height * 0.5
+                .attr 'class', 'document'
+                .attr 'width', width
+                .attr 'height', height
+                .attr 'xlink:href', '/images/document_gray.svg'
+                .on 'mouseover', ->
+                    self.picker.fetch({ news_id: news_id }, "details")
+                    d3.select(this)
+                        .attr 'xlink:href', '/images/document_blue.svg'
+                .on 'mouseout', ->
+                    item = d3.select(this)
+                    cluster = item.attr 'cluster'
+                    if cluster
+                        item.attr 'xlink:href', "/images/document_clusters/#{cluster}.svg"
+                    else
+                        item.attr 'xlink:href', '/images/document_gray.svg'
+                .on 'click', =>
+                    console.log "open", news_id
+
+        @stage.append 'image'
+            .attr 'x', @xScale(@user_data.x) - width * 0.5
+            .attr 'y', @yScale(@user_data.y) - height * 0.5
+            .attr 'class', 'document'
+            .attr 'width', width
+            .attr 'height', height
+            .attr 'xlink:href', '/images/user.svg'
+
+        @clustering() unless @axis_label.X is @axis_label.Y and @axis_label.X is null
+        @append_axis_label()
+
+    clustering: () =>
+        d3.selectAll("text").remove()
+        filename = new Date().getTime()
+
+        map = []
+        @dataset.forEach (data, news_id) =>
+            map.push { news_id: news_id, x: data.x, y: data.y }
+
+        $.ajax
+            url: '/articles/clustering'
+            type: 'post'
+            data:
+                map: map
+                div: @div_num
+                label_quant: 5
+                filename: filename
+
+            success: =>
+                $(".loading").fadeOut 100
+                @recommend filename
+
+        @append_axis_label()
+
+    plot_gravities: (text, x, y) =>
+        scale = 0.8
+        width = @padding * scale
+        height = @padding * scale
+
+        @stage.append 'text'
+            .attr 'x', @xScale(x) - width * 0.5
+            .attr 'y', @yScale(y) - height * 0.5
+            .attr 'original-title', @make_thumbs(text)
+            .attr 'class', 'gravity'
+            .text text
+
+        $('text').tipsy
+            gravity: 's'
+            delayOut: 50
+            html: true
+            trigger: 'focus'
+
+    svg_replace: (id, cluster) =>
+        $(".stage").find "image##{id}"
+            .attr 'href', "/images/document_clusters/#{cluster}.svg"
+            .attr 'cluster', cluster
+
+    cluster_rating: (word, score) =>
+        $.ajax
+            url: '/users/instant_profile_update'
+            type: 'get'
+            data:
+                word: word
+                score: score
+            dataType: 'json'
+
+            success: (data) =>
+                #if @axis_label.X is "自分のプロファイル"
+                #if @axis_label.Y is "自分のプロファイル"
+
+    make_thumbs: (word) =>
+        thumbs_up = $("<a>").attr 'href', "JavaScript: plotter.cluster_rating(\"#{word}\", 1)"
+            .append $("<i>").attr 'class', 'fa fa-thumbs-up'
+            .get(0).outerHTML
+        thumbs_down = $("<a>").attr 'href', "JavaScript: plotter.cluster_rating(\"#{word}\", -1)"
+            .append $("<i>").attr 'class', 'fa fa-thumbs-down'
+            .get(0).outerHTML
+
+        rate_link = "#{thumbs_up} or #{thumbs_down}"
+
+        rate_link
+
+    scale_update:() =>
+        ary_x = []
+        ary_y = []
+        @dataset.map (d) ->
+            ary_x.push d.x
+            ary_y.push d.y
+
+        min_x = Math.min.apply(null, ary_x) - 0.05
+        min_y = Math.min.apply(null, ary_y) - 0.05
+        max_x = Math.max.apply(null, ary_x) + 0.05
+        max_y = Math.max.apply(null, ary_y) + 0.05
+
+        @xScale = d3.scale.linear()
+            .domain [min_x, max_x]
+            .range [@padding, @width - @padding]
+        @yScale = d3.scale.linear()
+            .domain [min_y, max_y]
+            .range [@height - @padding, @padding]
+
+    recommend:(filename) =>
+        quant = 10
+        $.ajax
+            url: '/articles/recommend'
+            type: 'post'
+            data:
+                filename: filename
+                user_x: @user_data.x
+                user_y: @user_data.y
+                quant: quant
+
+            success: (data) ->
+                $("[data-role='recommend']").html ""
+
+                label = $("<div>").attr "class", "alert alert-dismissible alert-info"
+                    .append $("<strong>").html "あなたへのおすすめ　上位 #{quant} 件"
+                $("[data-role='recommend']").html label
+                    .append data
+                rating.rating_enable()
