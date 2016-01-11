@@ -3,9 +3,11 @@
 <% end %>
 
 <% @gravities.each do |grav| %>
-    <% quant = @glabel[grav[0].to_i].length %>
-    <% bell = RandomBell.new(mu: 0, sigma: 0.03) %>
-    <% @glabel[grav[0].to_i].each_with_index do |tag, idx| %>
-        plotter.plot_gravities("<%= tag %>", <%= grav[1] %> + <%= bell.rand %>, <%= grav[2] %> + <%= (idx - 2) * 0.03 %>);
+    <% if @glabel[grav[0].to_i].present? %>
+        <% quant = @glabel[grav[0].to_i].length %>
+        <% bell = RandomBell.new(mu: 0, sigma: 0.03) %>
+        <% @glabel[grav[0].to_i].each_with_index do |tag, idx| %>
+            plotter.plot_gravities("<%= tag %>", <%= grav[1] %> + <%= bell.rand %>, <%= grav[2] %> + <%= (idx - 2) * 0.03 %>);
+        <% end %>
     <% end %>
 <% end %>
