@@ -170,11 +170,20 @@ class ArticlesController < ApplicationController
     ranking = recommend_list.sort {|(k1, v1), (k2, v2)| v1 <=> v2 }
 
     recommend_list = []
+    rec = Recommendation.new
+    rec.user = current_user
+    rec.save
+
     ranking[0..(quant - 1)].each do |doc|
-      recommend_list.push doc.first.to_i
+      news_id = doc.first.to_i
+      recommend_list.push news_id
+      rs = RecommendationSource.new
+      rs.recommendation = rec
+      rs.source = news_id
+      rs.save
     end
 
-    render :partial => "article", :locals => { articles: recommend_list }
+    render :partial => "article", :locals => { articles: recommend_list, nps_rating: true }
   end
 
 private

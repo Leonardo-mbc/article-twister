@@ -37,6 +37,20 @@ class @Rating
 
                 @push id, sign
 
+        $("[data-role='nps'] a").on 'click', (e) =>
+            target = $(e.currentTarget)
+            li_tag = $(target).parent()
+            ul_tag = $(li_tag).parent()
+            news_panel = $(ul_tag).parent()
+
+            $(ul_tag).find("li").removeClass "active"
+            $(li_tag).addClass "active"
+
+            news_id = $(news_panel).data "news"
+            score = parseInt $(target).text()
+
+            console.log news_id, score
+
     push: (id, sign) ->
         $.ajax
             url: '/articles/push_rate'
@@ -53,3 +67,12 @@ class @Rating
 
                 if !title.html().match(re)
                     $(title).prepend '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span> '
+
+    show_question: () =>
+        $('html,body').animate
+            scrollTop: 0,
+                duration: 2000
+                easing: "easeOutExpo"
+
+        $("[data-role='tuner']").fadeOut 300, ->
+            $("[data-role='question']").fadeIn()

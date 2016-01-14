@@ -42,6 +42,8 @@ class @Plotter
             ofs = $(window).scrollTop()
             $("[data-role='tuner']").css
                 "margin-top": "#{ofs}px"
+            $("[data-role='question']").css
+                "margin-top": "#{ofs}px"
 
     append_axis_label: () =>
         d3.selectAll("g").remove()
@@ -72,6 +74,20 @@ class @Plotter
         $("[data-title='#{axis}']").html name
             .parent().removeClass('open');
         $("[data-label='#{axis}']").html name
+
+    change_axis_direct: (axis) =>
+        similar = "x_similar" if axis is 'X'
+        similar = "y_similar" if axis is 'Y'
+
+
+        $(".loading").fadeIn 100
+        $.ajax
+            url: "/articles/0/#{similar}"
+            type: 'get'
+
+            success: (data) =>
+                $(".loading").fadeOut 100
+
 
     clear_axis: (axis) =>
         @axis_label[axis] = null
@@ -213,11 +229,12 @@ class @Plotter
             data:
                 word: word
                 score: score
-            dataType: 'json'
 
             success: (data) =>
-                #if @axis_label.X is "自分のプロファイル"
-                #if @axis_label.Y is "自分のプロファイル"
+                if @axis_label.X is "自分のプロファイル"
+                    @change_axis_direct('X')
+                else if @axis_label.Y is "自分のプロファイル"
+                    @change_axis_direct('Y')
 
     make_thumbs: (word) =>
         thumbs_up = $("<a>").attr 'href', "JavaScript: plotter.cluster_rating(\"#{word}\", 1)"
@@ -251,7 +268,7 @@ class @Plotter
             .range [@height - @padding, @padding]
 
     recommend:(filename) =>
-        quant = 10
+        quant = 30
         $.ajax
             url: '/articles/recommend'
             type: 'post'
@@ -266,6 +283,13 @@ class @Plotter
 
                 label = $("<div>").attr "class", "alert alert-dismissible alert-info"
                     .append $("<strong>").html "あなたへのおすすめ　上位 #{quant} 件"
+
+                next = $("<a>").attr "class", "btn btn-default btn-lg btn-block margin-bottom"
+                    .html "次へ"
+                    .on "click", (e) =>
+                        rating.show_question()
+
                 $("[data-role='recommend']").html label
-                    .append data
+                    .append data, next
+
                 rating.rating_enable()

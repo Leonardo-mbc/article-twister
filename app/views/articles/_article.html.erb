@@ -11,7 +11,7 @@
 
         sign = news.sign(current_user.id)
     %>
-    <div class="panel <%=header_sign sign %>" data-news="<%= news.news_id %>" data-sign="<%= sign %>">
+    <div class="panel <%=header_sign sign %> text-center" data-news="<%= news.news_id %>" data-sign="<%= sign %>">
         <div class="panel-heading" style="cursor: move">
             <h3 class="panel-title">
                 <% if sign.present? %><span aria-hidden="true" class="glyphicon glyphicon-ok"></span><% end %>
@@ -21,11 +21,20 @@
 
         <div class="eyecatch" onClick="call_iframe_modal('<%= news.url %>');"></div>
 
-        <div class="well" style="margin: 1em; padding: 0px; cursor: pointer;">
-            <div class="panel-body" onClick="window.open('<%= news.url %>');">
+        <div class="panel-body" onClick="window.open('<%= news.url %>');">
+            <div class="well text-left" style="margin: 0px; cursor: pointer;">
                 <%= truncate fetch_body(news.news_id), :length => 140 %>
             </div>
         </div>
+
+        <% if defined? nps_rating %>
+            <% nps = news.nps(current_user.id) %>
+            <ul class="pagination pagination" data-role="nps" style="margin: 0px 0px 10px 0px">
+                <% for n in 0..10 %>
+                    <li <% if nps == n %>class="active"<% end %>><a href="JavaScript: void(0)"><%= n %></a></li>
+                <% end %>
+            </ul>
+        <% end %>
     </div>
     <% if checked_at.present? %>
         <div class="time_separater" data-time="<%= checked_at %>">
