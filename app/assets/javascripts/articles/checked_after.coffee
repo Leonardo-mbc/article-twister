@@ -55,3 +55,5 @@ class @CheckedAfter
                 .html k
             $("[data-role='result']").append label
             $("[data-role='result']").append ' '
+
+        analyzer.mount_ids @selected

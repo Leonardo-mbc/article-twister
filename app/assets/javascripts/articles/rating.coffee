@@ -49,7 +49,7 @@ class @Rating
             news_id = $(news_panel).data "news"
             score = parseInt $(target).text()
 
-            console.log news_id, score
+            @nps_push news_id, score
 
     push: (id, sign) ->
         $.ajax
@@ -67,6 +67,15 @@ class @Rating
 
                 if !title.html().match(re)
                     $(title).prepend '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span> '
+
+    nps_push: (id, nps) ->
+        $.ajax
+            url: '/articles/push_rate'
+            type: 'get'
+            data:
+                news_id: id
+                nps: nps
+            dataType: 'json'
 
     show_question: () =>
         $('html,body').animate

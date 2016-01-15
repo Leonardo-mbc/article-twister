@@ -1,0 +1,44 @@
+class @InstantAnalyzer
+        constructor: () ->
+            @selected = []
+
+        mount_ids: (selected) =>
+            @selected = []
+            selected.forEach (v, k) =>
+                news_dom = $("[data-news='#{k}']")
+                time_dom = $(news_dom).next()
+
+                nps = $(news_dom).find("li.active").text()
+                checked_at = $(time_dom).data("time")
+
+                @selected[k] = { sign: v, nps: nps, checked_at: checked_at }
+
+            @precision()
+            @nps()
+
+        precision: () =>
+            selected_length = 0
+            @selected.forEach (v, k) =>
+                selected_length += 1
+
+            pstv = @selected.filter (v, k) =>
+                0 < v.sign
+
+            value = (pstv.length / selected_length)
+
+            $("[data-role='result']").append $("<p>").html "precision: #{value}"
+
+        nps: () =>
+            selected_length = 0
+            @selected.forEach (v, k) =>
+                selected_length += 1
+
+            pstv = @selected.filter (v, k) =>
+                9 <= v.nps
+
+            ngtv = @selected.filter (v, k) =>
+                v.nps <= 6
+
+            value = (pstv.length / selected_length - ngtv.length / selected_length)
+
+            $("[data-role='result']").append $("<p>").html "NPS: #{value}"

@@ -9,9 +9,12 @@
 </div>
 
 <%= javascript_tag do %>
+    var analyzer;
     $(function() {
         var ca = new CheckedAfter();
         ca.select_triger();
         ca.result_scroll_trigger();
+
+        analyzer = new InstantAnalyzer();
     });
 <% end %>

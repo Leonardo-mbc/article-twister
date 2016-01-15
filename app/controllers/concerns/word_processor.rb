@@ -43,6 +43,15 @@ module WordProcessor
           f.puts "#{w},#{c}"
         end
         f.close
+
+      when 'rec_prof'
+        FileUtils.mkdir_p("#{public_dir}/user_profiles_when_recommended/#{current_user.id}/") unless Dir.exist?("#{public_dir}/user_profiles_when_recommended/#{current_user.id}/")
+        f = File.open("#{public_dir}/user_profiles_when_recommended/#{current_user.id}/#{id}.txt", 'w')
+        body.each do |w, c|
+          f.puts "#{w},#{c}"
+        end
+        f.close
+
     end
   end
 

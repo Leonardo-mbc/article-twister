@@ -1,5 +1,6 @@
 class ArticlesController < ApplicationController
   include WordProcessor
+  include Profiles
 
   def index
     @news = News.all().order("created_at DESC").page(params[:page]).per(10)
@@ -108,17 +109,19 @@ class ArticlesController < ApplicationController
   def push_rate
     news_id = params[:news_id]
     sign = params[:sign]
+    nps = params[:nps]
     user_id = current_user.id
 
     news = News.where(news_id: news_id).first
-    if news.sign(user_id).nil?
+    if news.sign(user_id).nil? && news.nps(user_id).nil?
       rate = UserDiscrimination.new
     else
       rate = news.user_discriminations.where(user_id: user_id).first
     end
 
     rate.news = news
-    rate.sign = sign
+    rate.sign = sign if sign.present?
+    rate.nps = nps if nps.present?
     rate.user = current_user
     status = rate.save
 
@@ -169,9 +172,20 @@ class ArticlesController < ApplicationController
 
     ranking = recommend_list.sort {|(k1, v1), (k2, v2)| v1 <=> v2 }
 
+    axis_label = { x: params[:axis_label_x], y: params[:axis_label_y] }
+    axis_label.each do |k, v|
+      axis_label[k] = nil
+
+      prof = Profile.where(name: v).first
+      axis_label[k] = prof.id unless prof.nil?
+      axis_label[k] = 0 if v == "自分のプロファイル"
+    end
+
     recommend_list = []
     rec = Recommendation.new
     rec.user = current_user
+    rec.x_profile = axis_label[:x]
+    rec.y_profile = axis_label[:y]
     rec.save
 
     ranking[0..(quant - 1)].each do |doc|
@@ -183,6 +197,7 @@ class ArticlesController < ApplicationController
       rs.save
     end
 
+    profile = normal_recommendations(rec.id)
     render :partial => "article", :locals => { articles: recommend_list, nps_rating: true }
   end
 
@@ -231,5 +246,10 @@ private
     return wc
 
     #spawn "./count #{public_dir}/articles_raw/#{art[:id]}.txt > #{public_dir}/articles/#{art[:id]}.txt", :chdir => "#{Rails.root}/app/bin"
+  end
+
+  def normal_recommendations(rec_id)
+    prof = update(dont_save = true)
+    save_article(prof, rec_id, "rec_prof")
   end
 end

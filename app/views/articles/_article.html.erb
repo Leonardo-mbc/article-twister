@@ -29,6 +29,10 @@
 
         <% if defined? nps_rating %>
             <% nps = news.nps(current_user.id) %>
+            <p class="text-success x-small">
+                この記事を他の人に薦める（シェア）するとしたら１１段階でどのくらいですか？<br/>
+                （０：したくない 〜 １０：とてもしたい）<br/>
+            </p>
             <ul class="pagination pagination" data-role="nps" style="margin: 0px 0px 10px 0px">
                 <% for n in 0..10 %>
                     <li <% if nps == n %>class="active"<% end %>><a href="JavaScript: void(0)"><%= n %></a></li>
