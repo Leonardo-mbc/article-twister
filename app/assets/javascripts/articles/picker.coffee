@@ -207,7 +207,7 @@ class @Picker
 
             console.log "ダウンロード中..."
             $.ajax
-                type: 'GET'
+                type: 'POST'
                 url: "import"
                 data:
                     selected: selected
@@ -229,7 +229,7 @@ class @Picker
                     typeof id is 'number'
 
                 $.ajax
-                    type: 'GET'
+                    type: 'POST'
                     url: "combine"
                     data:
                         selected: selected_ids

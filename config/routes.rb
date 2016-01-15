@@ -14,8 +14,8 @@ Rails.application.routes.draw do
       get :tuner
       get :checked_list
 
-      get :import
-      get :combine
+      post :import
+      post :combine
       get :push_rate
       post :clustering
       post :recommend
