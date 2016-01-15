@@ -20,7 +20,7 @@
                     <ul class="dropdown-menu">
                         <li data-pfupdbtn><%= link_to "プロファイル アップデート", profile_update_users_path, remote: true %></li>
                         <li class="divider"></li>
-                        <li><a href="/log/out">ログアウト</a></li>
+                        <li><%= link_to "ログアウト", destroy_user_session_path, :method => :delete, :class => 'navbar-link' %></li>
                     </ul>
                     <% else %>
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">ログイン／新規登録

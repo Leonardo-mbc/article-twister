@@ -1,10 +1,41 @@
 <div class="jumbotron">
     <h1>Login</h1>
     <p>上部のメニューバーからログイン、または新規登録してください。</p>
-    <%= link_to user_omniauth_authorize_path(:facebook), :class => 'btn btn-default' do %>
-        <i class="fa fa-facebook-square"></i> Facebookでログイン／新規登録
-    <% end %>
-    <%= link_to user_omniauth_authorize_path(:twitter), :class => 'btn btn-default' do %>
-        <i class="fa fa-twitter-square"></i> Twitterでログイン／新規登録
-    <% end %>
+
+    <div class="col-lg-6">
+        <%= link_to user_omniauth_authorize_path(:facebook), :class => 'btn btn-default' do %>
+            <i class="fa fa-facebook-square"></i> Facebookでログイン／新規登録
+        <% end %>
+        <%= link_to user_omniauth_authorize_path(:twitter), :class => 'btn btn-default' do %>
+            <i class="fa fa-twitter-square"></i> Twitterでログイン／新規登録
+        <% end %>
+    </div>
+
+    <div class="col-lg-4">
+        <select class="form-control" id="user_select">
+            <option value="0" selected="selected">強制ログイン</option>
+            <% @users.each do |user| %>
+              <option value="<%= user.id %>"><%= user.id %>: <%= user.name %></option>
+            <% end %>
+        </select>
+    </div>
 </div>
+
+<%= javascript_tag do %>
+    $(function() {
+        $("#user_select").change(function(e) {
+            var selected_id = $(this).val();
+
+            if(selected_id != 0) {
+                $.ajax({
+                    type: "GET",
+                    data: "id="+ selected_id,
+                    url: "/log/force",
+                    success: function(data) {
+                        location.href = "/";
+                    }
+                });
+            }
+        });
+    });
+<% end %>

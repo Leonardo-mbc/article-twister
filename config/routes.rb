@@ -3,6 +3,7 @@ Rails.application.routes.draw do
 
   get 'log/in'
   get 'log/out'
+  get 'log/force'
 
   root 'articles#index'
 
@@ -26,6 +27,8 @@ Rails.application.routes.draw do
     end
   end
 
+  devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
+
   resources :users do
     collection do
       get :profile_update
@@ -33,7 +36,6 @@ Rails.application.routes.draw do
     end
   end
 
-  devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

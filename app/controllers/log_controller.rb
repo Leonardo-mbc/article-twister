@@ -1,9 +1,9 @@
 class LogController < ApplicationController
   def in
+    @users = User.all
   end
 
-  def out
-    session[:user] = nil
-    redirect_to :root
+  def force
+    session[:user] = User.find(params[:id].to_i)
   end
 end
