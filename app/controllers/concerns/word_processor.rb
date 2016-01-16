@@ -46,6 +46,9 @@ module WordProcessor
 
       when 'rec_prof'
         FileUtils.mkdir_p("#{public_dir}/user_profiles_when_recommended/#{current_user.id}/") unless Dir.exist?("#{public_dir}/user_profiles_when_recommended/#{current_user.id}/")
+        
+        FileUtils.cp "#{public_dir}/user_profiles/#{current_user.id}.txt", "#{public_dir}/user_profiles_when_recommended/#{current_user.id}/c#{id}.txt"
+
         f = File.open("#{public_dir}/user_profiles_when_recommended/#{current_user.id}/#{id}.txt", 'w')
         body.each do |w, c|
           f.puts "#{w},#{c}"

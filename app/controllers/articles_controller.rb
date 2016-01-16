@@ -186,6 +186,7 @@ class ArticlesController < ApplicationController
     rec.user = current_user
     rec.x_profile = axis_label[:x]
     rec.y_profile = axis_label[:y]
+    rec.tuned = true
     rec.save
 
     ranking[0..(quant - 1)].each do |doc|
@@ -197,7 +198,47 @@ class ArticlesController < ApplicationController
       rs.save
     end
 
-    profile = normal_recommendations(rec.id)
+    profile = save_profiles(rec.id)
+    render :partial => "article", :locals => { articles: recommend_list, nps_rating: true }
+  end
+
+  def normal_recommend
+    public_dir = "#{Rails.root}/public"
+    sim_box = Hash.new
+    quant = params[:quant].to_i
+
+    rec = current_user.recommendations.order("created_at DESC").first
+    base_prof = "#{public_dir}/user_profiles_when_recommended/#{current_user.id}/#{rec.id}.txt"
+
+    checked_articles = current_user.user_discriminations.where("created_at < ?", rec.created_at).map{|c| c.news.news_id }
+
+    Dir::glob("#{public_dir}/articles_wc/*.txt").each do |data|
+      doc_id = data.scan(/([0-9]+?)\.txt/).flatten.first.to_i
+      unless checked_articles.include?(doc_id)
+        Open3.popen3("#{Rails.root}/app/bin/similar #{base_prof} #{data}") do |stdin, stdout, stderr|
+          stdin.close
+          sim = stdout.read.to_f
+          id = data.scan(/([0-9]+?)\.txt/).flatten.first
+          sim_box[id] = sim
+        end
+      end
+    end
+
+    nrec = Recommendation.new
+    nrec.user = current_user
+    nrec.tuned = false
+    nrec.save
+
+    recommend_list = []
+    sim_box.sort {|(k1, v1), (k2, v2)| v2 <=> v1 }[0..(quant - 1)].each do |k, v|
+      news_id = k.to_i
+      recommend_list.push news_id
+      rs = RecommendationSource.new
+      rs.recommendation = nrec
+      rs.source = news_id
+      rs.save
+    end
+
     render :partial => "article", :locals => { articles: recommend_list, nps_rating: true }
   end
 
@@ -248,7 +289,7 @@ private
     #spawn "./count #{public_dir}/articles_raw/#{art[:id]}.txt > #{public_dir}/articles/#{art[:id]}.txt", :chdir => "#{Rails.root}/app/bin"
   end
 
-  def normal_recommendations(rec_id)
+  def save_profiles(rec_id)
     prof = update(dont_save = true)
     save_article(prof, rec_id, "rec_prof")
   end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160114093514) do
+ActiveRecord::Schema.define(version: 20160115144609) do
 
   create_table "news", force: :cascade do |t|
     t.integer  "news_id"
@@ -51,6 +51,7 @@ ActiveRecord::Schema.define(version: 20160114093514) do
     t.datetime "updated_at", null: false
     t.integer  "x_profile"
     t.integer  "y_profile"
+    t.boolean  "tuned"
   end
 
   create_table "user_discriminations", force: :cascade do |t|

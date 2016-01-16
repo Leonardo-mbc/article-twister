@@ -299,7 +299,7 @@ class @Plotter
                 axis_label_y: @axis_label.Y
                 quant: quant
 
-            success: (data) ->
+            success: (data) =>
                 $("[data-role='recommend']").html ""
 
                 label = $("<div>").attr "class", "alert alert-dismissible alert-info"
@@ -308,9 +308,39 @@ class @Plotter
                 next = $("<a>").attr "class", "btn btn-default btn-lg btn-block margin-bottom"
                     .html "次へ"
                     .on "click", (e) =>
-                        rating.show_question()
+                        @normal_recommend()
 
                 $("[data-role='recommend']").html label
                     .append data, next
 
                 rating.rating_enable()
+
+    normal_recommend:(filename) =>
+        $(".loading").fadeIn 100
+
+        quant = 30
+        $.ajax
+            url: '/articles/normal_recommend'
+            type: 'post'
+            data:
+                quant: quant
+
+            success: (data) =>
+                $(".loading").fadeOut 100
+
+                $('html,body').animate
+                    scrollTop: 0,
+                        duration: 2000
+                        easing: "easeOutExpo"
+
+                label = $("<div>").attr "class", "alert alert-dismissible alert-info"
+                    .append $("<strong>").html "プロファイル調整前におすすめだったもの　上位 #{quant} 件"
+
+                $("[data-role='normal_recommend']").html label
+                    .append data
+
+                $("[data-role='tuner']").fadeOut 300, ->
+                    $("[data-role='normal_recommend']").fadeIn()
+
+                rating.rating_enable()
+                
