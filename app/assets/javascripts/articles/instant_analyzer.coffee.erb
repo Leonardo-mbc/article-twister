@@ -42,3 +42,13 @@ class @InstantAnalyzer
             value = (pstv.length / selected_length - ngtv.length / selected_length)
 
             $("[data-role='result']").append $("<p>").html "NPS: #{value}"
+
+        compare_reclist: (list) =>
+            $.ajax
+                url: '/analyzers/compare_recommendation_list'
+                type: 'get'
+                data:
+                    list: list
+
+                success: (data) =>
+                    $("[data-role='result']").append data

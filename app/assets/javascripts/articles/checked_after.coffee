@@ -1,6 +1,7 @@
 class @CheckedAfter
     constructor: () ->
         @selected = []
+        @selected_reclist = []
 
     select_triger: () ->
         $("[data-news]").on "click", (e) =>
@@ -26,8 +27,16 @@ class @CheckedAfter
     result_scroll_trigger: () =>
         $(window).scroll ->
             ofs = $(window).scrollTop()
-            $("[data-role='result']").css
+            $("[data-role='controller']").css
                 "margin-top": "#{ofs}px"
+
+    compare_trigger: () =>
+        $("[data-reclist]").change (e) =>
+            target = $(e.currentTarget)
+            which = target.data "reclist"
+            @selected_reclist[which - 1] = target.val()
+
+            analyzer.compare_reclist @selected_reclist if 2 <= @selected_reclist.length
 
     select: (news_id, sign, bulk = false) =>
         unless @selected[news_id] is undefined

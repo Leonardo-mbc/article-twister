@@ -24,6 +24,7 @@ class ArticlesController < ApplicationController
 
   def checked_list
     @news = current_user.user_discriminations.order("created_at DESC").map{|c| { news: c.news, checked_at: c.created_at.in_time_zone('Tokyo') } }
+    @recommends = current_user.recommendations.order("created_at DESC")
   end
 
   def x_similar
@@ -110,10 +111,11 @@ class ArticlesController < ApplicationController
     news_id = params[:news_id]
     sign = params[:sign]
     nps = params[:nps]
+    known = params[:known]
     user_id = current_user.id
 
     news = News.where(news_id: news_id).first
-    if news.sign(user_id).nil? && news.nps(user_id).nil?
+    if news.sign(user_id).nil? && news.nps(user_id).nil? && news.known(user_id).nil?
       rate = UserDiscrimination.new
     else
       rate = news.user_discriminations.where(user_id: user_id).first
@@ -122,6 +124,7 @@ class ArticlesController < ApplicationController
     rate.news = news
     rate.sign = sign if sign.present?
     rate.nps = nps if nps.present?
+    rate.already_know = known if known.present?
     rate.user = current_user
     status = rate.save
 
@@ -199,7 +202,7 @@ class ArticlesController < ApplicationController
     end
 
     profile = save_profiles(rec.id)
-    render :partial => "article", :locals => { articles: recommend_list, nps_rating: true }
+    render :partial => "article", :locals => { articles: recommend_list, rating: true }
   end
 
   def normal_recommend
@@ -239,7 +242,7 @@ class ArticlesController < ApplicationController
       rs.save
     end
 
-    render :partial => "article", :locals => { articles: recommend_list, nps_rating: true }
+    render :partial => "article", :locals => { articles: recommend_list, rating: true }
   end
 
 private

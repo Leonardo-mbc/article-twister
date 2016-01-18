@@ -51,6 +51,20 @@ class @Rating
 
             @nps_push news_id, score
 
+        $("[data-role='known'] a").on 'click', (e) =>
+            target = $(e.currentTarget)
+            div_tag = $(target).parent()
+            news_panel = $(div_tag).parent()
+
+            $(div_tag).find("a").removeClass "active"
+            $(target).addClass "active"
+
+            news_id = $(news_panel).data "news"
+            score = parseInt $(target).data "score"
+
+            @known_push news_id, !!score
+
+
     push: (id, sign) ->
         $.ajax
             url: '/articles/push_rate'
@@ -75,6 +89,15 @@ class @Rating
             data:
                 news_id: id
                 nps: nps
+            dataType: 'json'
+
+    known_push: (id, known) ->
+        $.ajax
+            url: '/articles/push_rate'
+            type: 'get'
+            data:
+                news_id: id
+                known: known
             dataType: 'json'
 
     show_question: () =>

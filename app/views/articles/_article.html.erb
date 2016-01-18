@@ -27,9 +27,18 @@
             </div>
         </div>
 
-        <% if defined? nps_rating %>
+        <% if defined? rating %>
+            <% known = news.known(current_user.id) %>
+            <p class="text-success small">
+                この記事を知っていましたか？<br/>
+            </p>
+            <div class="btn-group" data-role="known">
+                <a href="JavaScript: void(0)" data-score="1" class="btn btn-default <% if known && !known.nil? %>active<% end %>">知っていた</a>
+                <a href="JavaScript: void(0)" data-score="0" class="btn btn-default <% if !known && !known.nil? %>active<% end %>">知らなかった</a>
+            </div>
+            <br/><br/>
             <% nps = news.nps(current_user.id) %>
-            <p class="text-success x-small">
+            <p class="text-success small">
                 この記事を他の人に薦める（シェア）するとしたら１１段階でどのくらいですか？<br/>
                 （０：したくない 〜 １０：とてもしたい）<br/>
             </p>

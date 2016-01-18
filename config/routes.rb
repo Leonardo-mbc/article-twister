@@ -28,6 +28,12 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :analyzers do
+    collection do
+      get :compare_recommendation_list
+    end
+  end
+
   devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
 
   resources :users do

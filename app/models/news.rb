@@ -19,4 +19,13 @@ class News < ActiveRecord::Base
       nil
     end
   end
+
+  def known(user_id)
+    ud = user_discriminations.where(user_id: user_id)
+    if ud.present?
+      ud.first.already_know
+    else
+      nil
+    end
+  end
 end

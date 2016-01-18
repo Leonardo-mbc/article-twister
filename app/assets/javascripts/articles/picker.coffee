@@ -77,7 +77,7 @@ class @Picker
                 tr_tag.append $("<td>").append item.title
                 tr_tag.append $("<td>").append item.body unless target is "recently"
                 tr_tag.append $("<td>").append item.url unless target is "recently"
-                tr_tag.append $("<td>").append item.updated_at
+                tr_tag.append $("<td>").append item.created_at
 
                 tr_tags.push tr_tag
 
