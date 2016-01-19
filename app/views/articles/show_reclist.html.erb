@@ -1,0 +1,7 @@
+<% @articles.each do |key, news| %>
+    [<%= key %>]<br/>
+    <% news.each do |art| %>
+        <%= art.title %><br/>
+    <% end %>
+    <br/>
+<% end %>

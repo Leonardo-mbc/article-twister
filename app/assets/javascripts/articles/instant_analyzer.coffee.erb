@@ -13,10 +13,10 @@ class @InstantAnalyzer
 
                 @selected[k] = { sign: v, nps: nps, checked_at: checked_at }
 
-            @precision()
-            @nps()
+            @mounted_precision()
+            @mounted_nps()
 
-        precision: () =>
+        mounted_precision: () =>
             selected_length = 0
             @selected.forEach (v, k) =>
                 selected_length += 1
@@ -28,7 +28,7 @@ class @InstantAnalyzer
 
             $("[data-role='result']").append $("<p>").html "precision: #{value}"
 
-        nps: () =>
+        mounted_nps: () =>
             selected_length = 0
             @selected.forEach (v, k) =>
                 selected_length += 1
@@ -47,8 +47,34 @@ class @InstantAnalyzer
             $.ajax
                 url: '/analyzers/compare_recommendation_list'
                 type: 'get'
+                dataType: 'json'
                 data:
                     list: list
 
                 success: (data) =>
-                    $("[data-role='result']").append data
+                    data.forEach (result, k) =>
+                        label = $("<p>").attr "class", "text-success"
+                            .html "[COMPARE: #{result.compare}]"
+
+                        unexp = $("<p>").attr "class", "text-primary"
+                            .html "Unexp: #{result.unexp}"
+
+                        $("[data-role='result']").append label, unexp
+
+                        list.forEach (k, v) =>
+                            label = $("<p>").attr "class", "text-success"
+                                .html "[ #{k} ]"
+
+                            nps = $("<p>").attr "class", "text-primary"
+                                .html "nps: #{result.nps[k]}"
+
+                            precision = $("<p>").attr "class", "text-primary"
+                                .html "precision: #{result.precision[k]}"
+
+                            novelty = $("<p>").attr "class", "text-primary"
+                                .html "novelty: #{result.novelty[k]}"
+
+                            serendipity = $("<p>").attr "class", "text-primary"
+                                .html "serendipity quant: #{result.serendipity[k]}"
+
+                            $("[data-role='result']").append label, nps, precision, novelty, serendipity

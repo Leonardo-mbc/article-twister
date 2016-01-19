@@ -38,6 +38,8 @@ class @CheckedAfter
 
             analyzer.compare_reclist @selected_reclist if 2 <= @selected_reclist.length
 
+            @show_reclist()
+
     select: (news_id, sign, bulk = false) =>
         unless @selected[news_id] is undefined
             delete @selected[news_id]
@@ -66,3 +68,13 @@ class @CheckedAfter
             $("[data-role='result']").append ' '
 
         analyzer.mount_ids @selected
+
+    show_reclist: () =>
+        $.ajax
+            url: 'show_reclist'
+            type: 'get'
+            data:
+                list: @selected_reclist
+
+            success: (data) =>
+                $("[data-role='list']").html data

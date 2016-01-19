@@ -6,7 +6,13 @@ module ArticlesHelper
 
   def fetch_body(id)
     body = ""
-    body = File.open("#{Rails.root}/public/articles_raw/#{id}.txt", 'r').read
+
+    begin
+      body = File.open("#{Rails.root}/public/articles_raw/#{id}.txt", 'r').read
+    rescue => e
+      p e
+    end
+
     body
   end
 

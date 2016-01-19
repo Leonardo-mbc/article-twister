@@ -245,6 +245,17 @@ class ArticlesController < ApplicationController
     render :partial => "article", :locals => { articles: recommend_list, rating: true }
   end
 
+  def show_reclist
+    @articles = {}
+
+    rec_lists = Recommendation.find params[:list]
+    rec_lists.each do |list|
+      @articles[list.id] = News.where(news_id: list.recommendation_sources.pluck(:source))
+    end
+
+    render layout: false
+  end
+
 private
   def similar(prof_id)
     public_dir = "#{Rails.root}/public"

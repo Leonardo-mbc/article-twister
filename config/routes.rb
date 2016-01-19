@@ -20,6 +20,7 @@ Rails.application.routes.draw do
       post :clustering
       post :recommend
       post :normal_recommend
+      get :show_reclist
     end
 
     member do

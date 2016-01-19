@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-md-6" data-role="tuner">
+    <div class="col-md-6" data-role="list">
         <%= render :partial => "article", :locals => { articles: @news, rating: true } %>
     </div>
 
@@ -10,7 +10,7 @@
                 <select class="form-control" data-reclist="1">
                     <option value="0" selected="selected">推薦リストを選択（調整済み）</option>
                     <% @recommends.each do |rec| %>
-                        <option value="<%= rec.id %>"><%= rec.created_at.in_time_zone('Tokyo') %></option>
+                        <option value="<%= rec.id %>"><%= rec.id %>: <%= rec.created_at.in_time_zone('Tokyo') %> (<% if rec.tuned %>調整済み<% else %>オリジナル<% end %>)</option>
                     <% end %>
                 </select>
             </div>
@@ -19,7 +19,7 @@
                 <select class="form-control" data-reclist="2">
                     <option value="0" selected="selected">推薦リストを選択（オリジナル）</option>
                     <% @recommends.each do |rec| %>
-                        <option value="<%= rec.id %>"><%= rec.created_at.in_time_zone('Tokyo') %></option>
+                        <option value="<%= rec.id %>"><%= rec.id %>: <%= rec.created_at.in_time_zone('Tokyo') %> (<% if rec.tuned %>調整済み<% else %>オリジナル<% end %>)</option>
                     <% end %>
                 </select>
             </div>
