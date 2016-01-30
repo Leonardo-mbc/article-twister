@@ -4,6 +4,11 @@ module ArticlesHelper
     sign_patterns[sign.to_i]
   end
 
+  def tr_sign(sign)
+    sign_patterns = { -1 => "danger", 0 => "info", 1 => "success" }
+    sign_patterns[sign.to_i]
+  end
+
   def fetch_body(id)
     body = ""
 
