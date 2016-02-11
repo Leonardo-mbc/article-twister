@@ -2,6 +2,10 @@
 # ワーカーの数
 worker_processes 2
 
+#p ENV['RAILS_ROOT']
+#system("source #{ENV['RAILS_ROOT']}.secret")
+# TODO: init.dからだと環境変数が設定できてない
+
 # ソケット
 listen  File.expand_path('tmp/unicorn.sock', ENV['RAILS_ROOT'])
 pid     File.expand_path('tmp/unicorn.pid', ENV['RAILS_ROOT'])
